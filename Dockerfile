@@ -10,6 +10,9 @@ ENV JDBC_DATABASE_URL ${JDBC_DATABASE_URL}
 ENV JDBC_DATABASE_USERNAME ${JDBC_DATABASE_USERNAME}
 
 WORKDIR /app
-COPY ./mcs-prod-management-0.0.1-SNAPSHOT.jar /app
+# COPY ./mcs-prod-management-0.0.1-SNAPSHOT.jar /app
+# EXPOSE 8080
+# CMD ["java","-jar","mcs-prod-management-0.0.1-SNAPSHOT.jar"]
 EXPOSE 8080
-CMD ["java","-jar","mcs-prod-management-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java"]
+CMD ["-jar", "app.jar"]
