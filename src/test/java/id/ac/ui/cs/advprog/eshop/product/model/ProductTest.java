@@ -17,7 +17,7 @@ class ProductTest {
         this.product = new Product();
         this.product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         this.product.setProductName("Pajangan Doraemon");
-        this.product.setProductDescription("High-quality shampoo for daily use");
+        this.product.setProductDescription("High-quality decoration for aesthetics use");
         this.product.setProductPrice(49.99);
         this.product.setProductDiscount(5.00);
         this.product.setProductQuantity(100);
@@ -36,12 +36,12 @@ class ProductTest {
 
     @Test
     void testGetProductName() {
-        assertEquals("Sampo Cap Bambang", this.product.getProductName());
+        assertEquals("Pajangan Doraemon", this.product.getProductName());
     }
 
     @Test
     void testGetProductDescription() {
-        assertEquals("High-quality shampoo for daily use", this.product.getProductDescription());
+        assertEquals("High-quality decoration for aesthetics use", this.product.getProductDescription());
     }
 
     @Test
