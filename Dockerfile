@@ -1,4 +1,10 @@
-FROM gradle:jdk21-alpine
+FROM docker.io/library/eclipse-temurin:21-jdk-alpine AS builder
+
+RUN chmod +x ./gradlew
+RUN ./gradlew clean bootJar
+
+FROM docker.io/library/eclipse-temurin:21-jdk-alpine AS runner
+
 ARG PRODUCTION
 ARG JDBC_DATABASE_PASSWORD
 ARG JDBC_DATABASE_URL
