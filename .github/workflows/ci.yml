@@ -145,15 +145,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install SSH client
-        run: sudo apt-get install openssh-client
-
-      - name: create ssh key
-        run: echo "${{ secrets.SSH_KEY }}" > ssh-key.pem && cat ssh-key.pem
-
-      - name: update permission
-        run: chmod 400 ssh-key.pem
-
       - name: Deploy to GCP
         run: |
           ssh -o StrictHostKeyChecking=no -i ssh-key.pem ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_STATIC_IP }} "
@@ -162,3 +153,11 @@ jobs:
             sudo docker image rm -f ${{ secrets.REGISTRY_USER }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }}  || true &&
             sudo docker pull ${{ secrets.REGISTRY_USER }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }} && 
             sudo docker run --name ${{ secrets.CONTAINER_NAME }} --restart unless-stopped -d -p 80:8080 ${{ secrets.REGISTRY_USER }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }}"
+      - name: Install SSH client
+        run: sudo apt-get install openssh-client
+
+      - name: create ssh key
+        run: echo "${{ secrets.SSH_KEY }}" > ssh-key.pem && cat ssh-key.pem
+
+      - name: update permission
+        run: chmod 400 ssh-key.pem
