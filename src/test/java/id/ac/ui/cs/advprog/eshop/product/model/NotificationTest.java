@@ -22,14 +22,14 @@ class NotificationTest {
         this.product.setProductQuantity(100);
 
         this.notification = new Notification();
-        this.notification.setNotificationId("notif12345");
+        this.notification.setNotificationId("4842948f-83e2-4abe-8c77-25a42984ecbd");
         this.notification.setProduct(this.product);
         this.notification.setRead(false);
     }
 
     @Test
     void testGetNotificationId() {
-        assertEquals("notif12345", notification.getNotificationId());
+        assertEquals("4842948f-83e2-4abe-8c77-25a42984ecbd", notification.getNotificationId());
     }
 
     @Test
