@@ -21,8 +21,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Iterator<Notification> findAll() {
-        return notificationRepository.findAll();
+    public List<Notification> findAll() {
+        Iterator<Notification> notificationIterator = notificationRepository.findAll();
+        List<Notification> allNotifications = new ArrayList<>();
+        notificationIterator.forEachRemaining(allNotifications::add);
+        return allNotifications;
     }
 
     @Override
