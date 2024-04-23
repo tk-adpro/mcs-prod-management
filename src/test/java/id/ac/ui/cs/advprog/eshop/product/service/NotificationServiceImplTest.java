@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -58,10 +59,10 @@ class NotificationServiceImplTest {
         Iterator<Notification> notificationIterator = Arrays.asList(notification, notification2).iterator();
         doReturn(notificationIterator).when(notificationRepository).findAll();
 
-        Iterator<Notification> results = notificationService.findAll();
-        assertTrue(results.hasNext());
-        assertEquals(notification.getNotificationId(), results.next().getNotificationId());
-        assertEquals(notification2.getNotificationId(), results.next().getNotificationId());
+        List<Notification> results = notificationService.findAll();
+        
+        assertEquals(notification.getNotificationId(), results.get(0).getNotificationId());
+        assertEquals(notification2.getNotificationId(), results.get(1).getNotificationId());
     }
     @Test
     void testFindNotificationByIdFound() {
