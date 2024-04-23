@@ -2,20 +2,16 @@ package id.ac.ui.cs.advprog.eshop.product.repository;
 
 import id.ac.ui.cs.advprog.eshop.product.model.Notification;
 import id.ac.ui.cs.advprog.eshop.product.model.Product;
-import id.ac.ui.cs.advprog.eshop.product.repository.NotificationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 class NotificationRepositoryTest {

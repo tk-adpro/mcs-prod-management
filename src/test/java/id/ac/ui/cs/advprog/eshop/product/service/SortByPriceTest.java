@@ -4,8 +4,6 @@ import id.ac.ui.cs.advprog.eshop.product.model.Product;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 class SortByPriceTest extends ProductSortTestSetup {

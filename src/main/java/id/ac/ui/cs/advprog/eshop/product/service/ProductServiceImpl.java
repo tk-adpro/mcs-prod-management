@@ -37,13 +37,9 @@ public class ProductServiceImpl implements ProductService {
         List<Product> allProducts = new ArrayList<>();
         productIterator.forEachRemaining(allProducts::add);
 
-        allProducts.forEach(p -> System.out.println(p.getProductName() + " - " + p.getProductPrice()));
 
         if (sortStrategy != null) {
-            allProducts = sortStrategy.sort(allProducts);
-        }
-        allProducts.forEach(p -> System.out.println(p.getProductName() + " - " + p.getProductPrice()));
-
+            allProducts = sortStrategy.sort(allProducts);        }
         return allProducts;
     }
 

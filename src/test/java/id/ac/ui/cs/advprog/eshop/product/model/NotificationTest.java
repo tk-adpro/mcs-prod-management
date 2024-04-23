@@ -1,6 +1,5 @@
 package id.ac.ui.cs.advprog.eshop.product.model;
 
-import id.ac.ui.cs.advprog.eshop.product.model.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

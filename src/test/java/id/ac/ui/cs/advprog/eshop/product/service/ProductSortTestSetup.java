@@ -2,14 +2,11 @@ package id.ac.ui.cs.advprog.eshop.product.service;
 
 import id.ac.ui.cs.advprog.eshop.product.model.Product;
 import id.ac.ui.cs.advprog.eshop.product.repository.ProductRepository;
-import id.ac.ui.cs.advprog.eshop.product.service.ProductService;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
+
 
 import org.junit.jupiter.api.BeforeEach;
-import static org.mockito.Mockito.*;
 
 public abstract class ProductSortTestSetup {
     protected ProductServiceImpl productService;

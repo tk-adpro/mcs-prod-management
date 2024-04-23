@@ -1,6 +1,5 @@
 package id.ac.ui.cs.advprog.eshop.product.controller;
 
-import id.ac.ui.cs.advprog.eshop.product.*;
 import id.ac.ui.cs.advprog.eshop.product.model.Product;
 import id.ac.ui.cs.advprog.eshop.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
