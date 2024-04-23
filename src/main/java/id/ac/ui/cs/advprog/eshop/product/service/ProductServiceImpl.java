@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.eshop.product.service;
 
+import id.ac.ui.cs.advprog.eshop.product.model.Notification;
 import id.ac.ui.cs.advprog.eshop.product.model.Product;
 import id.ac.ui.cs.advprog.eshop.product.repository.ProductRepository;
 
@@ -15,6 +16,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private NotificationService notificationService;
 
     private SortStrategy sortStrategy;
 
@@ -39,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
 
 
         if (sortStrategy != null) {
-            allProducts = sortStrategy.sort(allProducts);        }
+            allProducts = sortStrategy.sort(allProducts);}
         return allProducts;
     }
 
@@ -55,6 +59,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product update(Product product) {
+        if(product.getProductQuantity() == 0){
+            Notification notification = new Notification();
+            notification.setNotificationId(java.util.UUID.randomUUID().toString());
+            notification.setProduct(product);
+            notification.setRead(false);
+            notificationService.create(notification);
+        }
         return productRepository.update(product.getProductId(), product);
     }
 
