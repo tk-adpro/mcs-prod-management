@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import id.ac.ui.cs.advprog.eshop.product.model.Product;
+import id.ac.ui.cs.advprog.eshop.product.model.Notification;
 import id.ac.ui.cs.advprog.eshop.product.repository.ProductRepository;
 
 import java.util.Arrays;
@@ -25,7 +26,8 @@ class ProductServiceImplTest {
 
     @Mock
     private ProductRepository productRepository;
-
+    @Mock
+    private NotificationService notificationService;
     private Product product;
 
     @BeforeEach
@@ -33,6 +35,7 @@ class ProductServiceImplTest {
         product = new Product();
         product.setProductId("p1");
         product.setProductName("Product 1");
+        product.setProductQuantity(1);
     }
 
     @Test
@@ -103,4 +106,19 @@ class ProductServiceImplTest {
         assertThrows(NoSuchElementException.class, () -> productService.update(product));
         verify(productRepository, times(1)).update(product.getProductId(), product);
     }
+
+    @Test
+    void testUpdateProductWhenOutOfStock() {
+        product.setProductQuantity(0);
+
+        when(notificationService.create(any())).thenReturn(new Notification());
+
+        doReturn(product).when(productRepository).update(anyString(), any(Product.class));
+
+        productService.update(product);
+
+        verify(notificationService, times(1)).create(any());
+        verify(productRepository, times(1)).update(product.getProductId(), product);
+    }
+
 }
