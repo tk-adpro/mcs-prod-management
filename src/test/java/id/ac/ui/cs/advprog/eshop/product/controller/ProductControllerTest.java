@@ -31,7 +31,10 @@ public class ProductControllerTest {
     private ProductController productController;
 
     private MockMvc mockMvc;
-
+    @BeforeEach
+    public void setup() {
+        mockMvc = MockMvcBuilders.standaloneSetup(productController).build();
+    }
     @Test
     public void testGetAllProducts() throws Exception {
         // Mocking the service response
@@ -69,7 +72,6 @@ public class ProductControllerTest {
         product.setProductName("Test Product");
 
         when(productService.create(any(Product.class))).thenReturn(product);
-
         mockMvc.perform(post("/product/createProduct")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(product)))
@@ -111,8 +113,5 @@ public class ProductControllerTest {
         verify(productService, times(1)).delete(productId);
     }
 
-    @BeforeEach
-    public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(productController).build();
-    }
+
 }

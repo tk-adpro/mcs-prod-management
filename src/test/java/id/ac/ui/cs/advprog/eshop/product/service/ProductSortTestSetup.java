@@ -14,7 +14,7 @@ public abstract class ProductSortTestSetup {
 
     @BeforeEach
     public void setUp() {
-        productRepository = new ProductRepository(); // Assuming this is the correct initialization
+        productRepository = new ProductRepository();
         productService = new ProductServiceImpl();
         productService.setProductRepository(productRepository);
 
