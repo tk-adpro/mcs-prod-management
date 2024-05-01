@@ -11,9 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -28,25 +27,26 @@ class NotificationServiceImplTest {
     private NotificationRepository notificationRepository;
 
     private Notification notification;
-    private Product product;
 
     @BeforeEach
     void setUp() {
         notification = new Notification();
-        product = new Product();
+        Product product = new Product();
         product.setProductId("p1");
         product.setProductName("Product 1");
         notification.setProduct(product);
         notification.setNotificationId("n1");
         notification.setRead(false);
     }
+
     @Test
     void testCreateNotification() {
-        doReturn(notification).when(notificationRepository).create(notification);
+        when(notificationRepository.save(notification)).thenReturn(notification);
         Notification createdNotification = notificationService.create(notification);
-        verify(notificationRepository, times(1)).create(notification);
+        verify(notificationRepository).save(notification);
         assertEquals(notification.getNotificationId(), createdNotification.getNotificationId());
     }
+
     @Test
     void testFindAllNotifications() {
         Notification notification2 = new Notification();
@@ -56,36 +56,39 @@ class NotificationServiceImplTest {
         product2.setProductName("Product 2");
         notification2.setProduct(product2);
         notification2.setRead(false);
-        Iterator<Notification> notificationIterator = Arrays.asList(notification, notification2).iterator();
-        doReturn(notificationIterator).when(notificationRepository).findAll();
+        when(notificationRepository.findAll()).thenReturn(Arrays.asList(notification, notification2));
 
         List<Notification> results = notificationService.findAll();
-        
+
+        assertEquals(2, results.size());
         assertEquals(notification.getNotificationId(), results.get(0).getNotificationId());
         assertEquals(notification2.getNotificationId(), results.get(1).getNotificationId());
     }
+
     @Test
     void testFindNotificationByIdFound() {
-        doReturn(notification).when(notificationRepository).findById("n1");
-        Notification foundNotification = notificationService.findById("n1");
+        when(notificationRepository.findById("n1")).thenReturn(Optional.of(notification));
+        Notification foundNotification = notificationService.findById("n1").orElse(null);
         assertNotNull(foundNotification);
         assertEquals("n1", foundNotification.getNotificationId());
     }
 
     @Test
     void testFindNotificationByIdNotFound() {
-        doReturn(null).when(notificationRepository).findById("unknown");
-        assertNull(notificationService.findById("unknown"));
+        when(notificationRepository.findById("unknown")).thenReturn(Optional.empty());
+        Optional<Notification> result = notificationService.findById("unknown");
+        assertFalse(result.isPresent());
     }
+
     @Test
     void testUpdateNotification() {
         Notification updatedNotification = new Notification();
         updatedNotification.setNotificationId("n1");
         updatedNotification.setRead(true);
+        when(notificationRepository.save(updatedNotification)).thenReturn(updatedNotification);
 
-        doReturn(updatedNotification).when(notificationRepository).update("n1", updatedNotification);
         Notification result = notificationService.update("n1", updatedNotification);
-        verify(notificationRepository, times(1)).update("n1", updatedNotification);
+        verify(notificationRepository).save(updatedNotification);
         assertEquals("n1", result.getNotificationId());
         assertTrue(result.isRead());
     }
@@ -95,9 +98,10 @@ class NotificationServiceImplTest {
         Notification updatedNotification = new Notification();
         updatedNotification.setNotificationId("n3");
         updatedNotification.setRead(true);
-
-        when(notificationRepository.update("n3", updatedNotification)).thenThrow(new NoSuchElementException());
-        assertThrows(NoSuchElementException.class, () -> notificationService.update("n3", updatedNotification));
-        verify(notificationRepository, times(1)).update("n3", updatedNotification);
+        when(notificationRepository.save(updatedNotification)).thenReturn(updatedNotification);
+        
+        Notification result = notificationService.update("n3", updatedNotification);
+        assertNotNull(result);
+        verify(notificationRepository).save(updatedNotification);
     }
 }
