@@ -10,10 +10,8 @@ import id.ac.ui.cs.advprog.eshop.product.model.Product;
 import id.ac.ui.cs.advprog.eshop.product.model.Notification;
 import id.ac.ui.cs.advprog.eshop.product.repository.ProductRepository;
 
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -28,6 +26,7 @@ class ProductServiceImplTest {
     private ProductRepository productRepository;
     @Mock
     private NotificationService notificationService;
+    
     private Product product;
 
     @BeforeEach
@@ -40,9 +39,9 @@ class ProductServiceImplTest {
 
     @Test
     void testCreateProduct() {
-        doReturn(product).when(productRepository).create(product);
+        when(productRepository.save(product)).thenReturn(product);
         Product createdProduct = productService.create(product);
-        verify(productRepository, times(1)).create(product);
+        verify(productRepository).save(product);
         assertEquals(product.getProductId(), createdProduct.getProductId());
     }
 
@@ -51,10 +50,8 @@ class ProductServiceImplTest {
         Product product2 = new Product();
         product2.setProductId("p2");
         product2.setProductName("Product 2");
+        when(productRepository.findAll()).thenReturn(List.of(product, product2));
 
-        Iterator<Product> productIterator = Arrays.asList(product, product2).iterator();
-        doReturn(productIterator).when(productRepository).findAll();
-        
         List<Product> products = productService.findAll();
         assertEquals(2, products.size());
         assertTrue(products.contains(product) && products.contains(product2));
@@ -62,63 +59,51 @@ class ProductServiceImplTest {
 
     @Test
     void testDeleteProductSuccess() {
-        String productId = "p1";
-        doReturn(true).when(productRepository).delete(productId);
-        assertTrue(productService.delete(productId));
-        verify(productRepository, times(1)).delete(productId);
+        doNothing().when(productRepository).deleteById(product.getProductId());
+        productService.delete(product.getProductId());
+        verify(productRepository).deleteById(product.getProductId());
     }
 
     @Test
     void testDeleteProductFailure() {
-        String productId = "p3";
-        doReturn(false).when(productRepository).delete(productId);
-        assertFalse(productService.delete(productId));
-        verify(productRepository, times(1)).delete(productId);
+        doThrow(new IllegalArgumentException("Product not found")).when(productRepository).deleteById("p3");
+        assertThrows(IllegalArgumentException.class, () -> productService.delete("p3"));
+        verify(productRepository).deleteById("p3");
     }
 
     @Test
     void testFindProductByIdFound() {
-        String productId = "p1";
-        doReturn(product).when(productRepository).findById(productId);
-        Product foundProduct = productService.findById(productId);
+        when(productRepository.findById(product.getProductId())).thenReturn(Optional.of(product));
+        Product foundProduct = productService.findById(product.getProductId()).orElse(null);
         assertNotNull(foundProduct);
-        assertEquals(productId, foundProduct.getProductId());
+        assertEquals(product.getProductId(), foundProduct.getProductId());
     }
 
     @Test
     void testFindProductByIdNotFound() {
-        String productId = "unknown";
-        doReturn(null).when(productRepository).findById(productId);
-        assertNull(productService.findById(productId));
+        when(productRepository.findById("unknown")).thenReturn(Optional.empty());
+        Optional<Product> foundProduct = productService.findById("unknown");
+        assertFalse(foundProduct.isPresent());
     }
 
     @Test
     void testUpdateProduct() {
-        doReturn(product).when(productRepository).update(anyString(), any(Product.class));
+        when(productRepository.save(product)).thenReturn(product);
         Product updatedProduct = productService.update(product);
-        verify(productRepository, times(1)).update(product.getProductId(), product);
+        verify(productRepository).save(product);
         assertEquals(product.getProductId(), updatedProduct.getProductId());
-    }
-
-    @Test
-    void testUpdateProductWithNonExistingId() {
-        when(productRepository.update(anyString(), any(Product.class))).thenThrow(new NoSuchElementException());
-        assertThrows(NoSuchElementException.class, () -> productService.update(product));
-        verify(productRepository, times(1)).update(product.getProductId(), product);
     }
 
     @Test
     void testUpdateProductWhenOutOfStock() {
         product.setProductQuantity(0);
-
         when(notificationService.create(any())).thenReturn(new Notification());
-
-        doReturn(product).when(productRepository).update(anyString(), any(Product.class));
+        when(productRepository.save(product)).thenReturn(product);
 
         productService.update(product);
 
-        verify(notificationService, times(1)).create(any());
-        verify(productRepository, times(1)).update(product.getProductId(), product);
+        verify(notificationService).create(any());
+        verify(productRepository).save(product);
     }
 
 }
