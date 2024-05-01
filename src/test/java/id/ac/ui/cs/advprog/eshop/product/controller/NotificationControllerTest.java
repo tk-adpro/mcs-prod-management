@@ -90,6 +90,7 @@ public class NotificationControllerTest {
         Notification notification = new Notification();
         notification.setNotificationId(notificationId);
 
+        doReturn(Optional.of(notification)).when(notificationService).findById(notificationId);
         doReturn(notification).when(notificationService).update(eq(notificationId), any(Notification.class));
 
         mockMvc.perform(put("/notification/updateNotification/{notificationId}", notificationId)
