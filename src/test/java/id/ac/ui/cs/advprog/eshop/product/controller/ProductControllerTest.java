@@ -90,6 +90,7 @@ public class ProductControllerTest {
         product.setProductId(productId);
         product.setProductName("Updated Product");
 
+        when(productService.findById(productId)).thenReturn(Optional.of(product));
         when(productService.update(any(Product.class))).thenReturn(product);
 
         mockMvc.perform(put("/product/updateProduct/{productId}", productId)
