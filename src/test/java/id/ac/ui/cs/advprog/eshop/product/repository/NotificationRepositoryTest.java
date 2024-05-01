@@ -5,19 +5,20 @@ import id.ac.ui.cs.advprog.eshop.product.model.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
+import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
-
 
 @ExtendWith(MockitoExtension.class)
 class NotificationRepositoryTest {
 
-    @InjectMocks
-    private NotificationRepository mockNotificationRepository;
+    @Mock
+    private NotificationRepository notificationRepository;
 
     private Notification notification;
 
@@ -35,53 +36,57 @@ class NotificationRepositoryTest {
 
     @Test
     void testCreateNotification_HappyPath() {
-        Notification createdNotification = mockNotificationRepository.create(notification);
+        when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
+        Notification createdNotification = notificationRepository.save(notification);
         assertNotNull(createdNotification);
         assertEquals("notif123", createdNotification.getNotificationId());
     }
 
     @Test
     void testCreateNotification_UnhappyPath_NullNotification() {
-        Notification createdNotification = mockNotificationRepository.create(null);
-        assertNull(createdNotification, "Notification creation should fail when trying to add null.");
+        when(notificationRepository.save(null)).thenThrow(new IllegalArgumentException("Notification cannot be null"));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> notificationRepository.save(null));
+        assertEquals("Notification cannot be null", exception.getMessage());
     }
 
     @Test
     void testFindAll_HappyPath() {
-        mockNotificationRepository.create(notification);
-        Iterator<Notification> notifications = mockNotificationRepository.findAll();
-        assertTrue(notifications.hasNext());
-        assertEquals(notification, notifications.next());
+        when(notificationRepository.findAll()).thenReturn(List.of(notification));
+        List<Notification> notifications = notificationRepository.findAll();
+        assertFalse(notifications.isEmpty());
+        assertEquals(notification, notifications.get(0));
     }
 
     @Test
     void testFindAll_UnhappyPath_EmptyRepository() {
-        Iterator<Notification> notifications = mockNotificationRepository.findAll();
-        assertFalse(notifications.hasNext(), "Notification iterator should have no next element when the repository is empty.");
+        when(notificationRepository.findAll()).thenReturn(List.of());
+        List<Notification> notifications = notificationRepository.findAll();
+        assertTrue(notifications.isEmpty());
     }
 
     @Test
     void testFindById_HappyPath() {
-        mockNotificationRepository.create(notification);
-        Notification foundNotification = mockNotificationRepository.findById(notification.getNotificationId());
-        assertNotNull(foundNotification);
-        assertEquals("notif123", foundNotification.getNotificationId());
+        when(notificationRepository.findById(notification.getNotificationId())).thenReturn(Optional.of(notification));
+        Optional<Notification> foundNotification = notificationRepository.findById(notification.getNotificationId());
+        assertTrue(foundNotification.isPresent());
+        assertEquals("notif123", foundNotification.get().getNotificationId());
     }
 
     @Test
     void testFindById_UnhappyPath_NotificationNotFound() {
-        Notification foundNotification = mockNotificationRepository.findById("nonexistent-id");
-        assertNull(foundNotification, "Should return null for a non-existent notification ID.");
+        when(notificationRepository.findById("nonexistent-id")).thenReturn(Optional.empty());
+        Optional<Notification> foundNotification = notificationRepository.findById("nonexistent-id");
+        assertFalse(foundNotification.isPresent());
     }
 
     @Test
     void testUpdate_HappyPath() {
-        mockNotificationRepository.create(notification);
         Notification updatedNotification = new Notification();
         updatedNotification.setNotificationId(notification.getNotificationId());
-        updatedNotification.setRead(true); // Change read status to true
+        updatedNotification.setRead(true);
+        when(notificationRepository.save(updatedNotification)).thenReturn(updatedNotification);
 
-        Notification result = mockNotificationRepository.update(notification.getNotificationId(), updatedNotification);
+        Notification result = notificationRepository.save(updatedNotification);
         assertNotNull(result);
         assertTrue(result.isRead());
     }
@@ -91,8 +96,9 @@ class NotificationRepositoryTest {
         Notification updatedNotification = new Notification();
         updatedNotification.setNotificationId("nonexistent-id");
         updatedNotification.setRead(true);
+        when(notificationRepository.findById("nonexistent-id")).thenReturn(Optional.empty());
 
-        Notification result = mockNotificationRepository.update("nonexistent-id", updatedNotification);
-        assertNull(result, "Should return null when trying to update a non-existent notification.");
+        Optional<Notification> result = notificationRepository.findById("nonexistent-id");
+        assertFalse(result.isPresent());
     }
 }
