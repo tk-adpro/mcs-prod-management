@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.eshop.product.controller;
 
 import id.ac.ui.cs.advprog.eshop.product.model.Notification;
+import id.ac.ui.cs.advprog.eshop.product.model.Product;
 import id.ac.ui.cs.advprog.eshop.product.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/notification")
@@ -31,8 +33,12 @@ public class NotificationController {
 
     @GetMapping("/getNotificationById/{notificationId}")
     public ResponseEntity<Notification> getNotificationById(@PathVariable String notificationId) {
-        Notification notification = service.findById(notificationId);
-        return new ResponseEntity<>(notification, HttpStatus.OK);
+        Optional<Notification> notification = service.findById(notificationId);
+        if(notification.isPresent()){
+            return ResponseEntity.ok(notification.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/getAllNotification")
