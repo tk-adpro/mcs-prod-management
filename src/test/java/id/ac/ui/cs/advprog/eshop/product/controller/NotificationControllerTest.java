@@ -19,6 +19,7 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class NotificationControllerTest {
@@ -56,7 +57,7 @@ public class NotificationControllerTest {
         Notification notification = new Notification();
         notification.setNotificationId(notificationId);
 
-        when(notificationService.findById(notificationId)).thenReturn(notification);
+        when(notificationService.findById(notificationId)).thenReturn(Optional.of(notification));
 
         mockMvc.perform(get("/notification/getNotificationById/{notificationId}", notificationId))
                 .andExpect(status().isOk())
