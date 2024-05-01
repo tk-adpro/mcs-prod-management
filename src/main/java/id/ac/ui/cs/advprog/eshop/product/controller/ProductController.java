@@ -18,7 +18,7 @@ public class ProductController {
     @GetMapping("/getAllProducts")
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = service.findAll();
-        return ResponseEntity.ok(products); // Simplified return
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("/getProductById/{productId}")
