@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -56,7 +57,7 @@ public class ProductControllerTest {
         Product product = new Product();
         product.setProductId(productId);
 
-        when(productService.findById(productId)).thenReturn(product);
+        when(productService.findById(productId)).thenReturn(Optional.of(product));
 
         mockMvc.perform(get("/product/getProductById/{productId}", productId))
                 .andExpect(status().isOk())
