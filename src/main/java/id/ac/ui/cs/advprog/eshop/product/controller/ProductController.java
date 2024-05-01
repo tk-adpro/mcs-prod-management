@@ -1,17 +1,15 @@
 package id.ac.ui.cs.advprog.eshop.product.controller;
 
 import id.ac.ui.cs.advprog.eshop.product.model.Product;
-import id.ac.ui.cs.advprog.eshop.product.model.Notification;
-import id.ac.ui.cs.advprog.eshop.product.service.NotificationService;
 import id.ac.ui.cs.advprog.eshop.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import java.util.Optional;
 
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/product")
@@ -28,8 +26,12 @@ public class ProductController {
 
     @GetMapping("/getProductById/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable String productId) {
-        Product product = service.findById(productId);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        Optional<Product> product = service.findById(productId);
+        if (product.isPresent()) {
+            return ResponseEntity.ok(product.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/createProduct")
