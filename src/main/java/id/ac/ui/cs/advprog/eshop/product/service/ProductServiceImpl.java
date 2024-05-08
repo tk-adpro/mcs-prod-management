@@ -29,11 +29,10 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product);
     }
 
-    @Override
-    public List<Product> findAll() {
+    public List<Product> findAll(SortStrategy sorting) {
         List<Product> allProducts = productRepository.findAll();
-        if (sortStrategy != null) {
-            allProducts = sortStrategy.sort(allProducts);
+        if (sorting != null) {
+            allProducts = sorting.sort(allProducts);
         }
         return allProducts;
     }

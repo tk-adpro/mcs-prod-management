@@ -2,6 +2,10 @@ package id.ac.ui.cs.advprog.eshop.product.controller;
 
 import id.ac.ui.cs.advprog.eshop.product.model.Product;
 import id.ac.ui.cs.advprog.eshop.product.service.ProductService;
+import id.ac.ui.cs.advprog.eshop.product.service.SortStrategy;
+import id.ac.ui.cs.advprog.eshop.product.service.SortByDate;
+import id.ac.ui.cs.advprog.eshop.product.service.SortByName;
+import id.ac.ui.cs.advprog.eshop.product.service.SortByPrice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +19,30 @@ public class ProductController {
     @Autowired
     private ProductService service;
 
+//    @GetMapping("/getAllProducts")
+//    public ResponseEntity<List<Product>> getAllProducts() {
+//        List<Product> products = service.findAll();
+//        return ResponseEntity.ok(products);
+//    }
     @GetMapping("/getAllProducts")
-    public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = service.findAll();
+    public ResponseEntity<List<Product>> getAllProducts(@RequestParam(required = false) String sort) {
+        SortStrategy strategy = null;
+        if (sort != null) {
+            switch (sort) {
+                case "SortByName":
+                    strategy = new SortByName();
+                    break;
+                case "SortByDate":
+                    strategy = new SortByDate();
+                    break;
+                case "SortByPrice":
+                    strategy = new SortByPrice();
+                    break;
+            }
+        }
+        List<Product> products = service.findAll(strategy);
         return ResponseEntity.ok(products);
     }
-
     @GetMapping("/getProductById/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable String productId) {
         return service.findById(productId)

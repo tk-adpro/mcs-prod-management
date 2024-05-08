@@ -6,7 +6,7 @@ import java.util.Optional;
 public interface ProductService {
     void setSortStrategy(SortStrategy sortStrategy);
     Product create(Product product);
-    List<Product> findAll();
+    List<Product> findAll(SortStrategy sortStrategy);
     Optional<Product> findById(String productId);
     boolean delete(String productId);
     Product update(Product product);
