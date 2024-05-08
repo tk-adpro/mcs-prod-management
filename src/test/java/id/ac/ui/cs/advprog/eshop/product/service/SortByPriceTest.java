@@ -10,7 +10,6 @@ class SortByPriceTest extends ProductSortTestSetup {
 
     @Test
     void testSortByPriceHappyPath() {
-//        productService.setSortStrategy(new SortByPrice());
         List<Product> sortedProducts = productService.findAll(new SortByPrice());
         System.out.println(sortedProducts.get(0).getProductPrice());
         System.out.println(sortedProducts.get(1).getProductPrice());
@@ -23,7 +22,6 @@ class SortByPriceTest extends ProductSortTestSetup {
 
     @Test
     void testSortByPriceUnhappyPath() {
-//        productService.setSortStrategy(new SortByPrice());
         List<Product> sortedProducts = productService.findAll(new SortByPrice());
         assertNotEquals(1.25, sortedProducts.get(0).getProductPrice());
     }

@@ -19,11 +19,6 @@ public class ProductController {
     @Autowired
     private ProductService service;
 
-//    @GetMapping("/getAllProducts")
-//    public ResponseEntity<List<Product>> getAllProducts() {
-//        List<Product> products = service.findAll();
-//        return ResponseEntity.ok(products);
-//    }
     @GetMapping("/getAllProducts")
     public ResponseEntity<List<Product>> getAllProducts(@RequestParam(required = false) String sort) {
         SortStrategy strategy = null;
