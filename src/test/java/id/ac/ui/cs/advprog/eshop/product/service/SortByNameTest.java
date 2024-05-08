@@ -12,8 +12,8 @@ class SortByNameTest extends ProductSortTestSetup {
 
     @Test
     void testSortByNameHappyPath() {
-        productService.setSortStrategy(new SortByName());
-        List<Product> sortedProducts = productService.findAll();
+//        productService.setSortStrategy(new SortByName());
+        List<Product> sortedProducts = productService.findAll(new SortByName());
 
 
         assertEquals("Amigo", sortedProducts.get(0).getProductName());
@@ -23,8 +23,8 @@ class SortByNameTest extends ProductSortTestSetup {
 
     @Test
     void testSortByNameUnhappyPath() {
-        productService.setSortStrategy(new SortByName());
-        List<Product> sortedProducts = productService.findAll();
+//        productService.setSortStrategy(new SortByName());
+        List<Product> sortedProducts = productService.findAll(new SortByName());
         assertNotEquals("Orange", sortedProducts.get(0).getProductName());
     }
 }

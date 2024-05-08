@@ -52,7 +52,7 @@ class ProductServiceImplTest {
         product2.setProductName("Product 2");
         when(productRepository.findAll()).thenReturn(List.of(product, product2));
 
-        List<Product> products = productService.findAll();
+        List<Product> products = productService.findAll(null);
         assertEquals(2, products.size());
         assertTrue(products.contains(product) && products.contains(product2));
     }

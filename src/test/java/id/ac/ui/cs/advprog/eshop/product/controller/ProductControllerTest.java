@@ -40,7 +40,7 @@ public class ProductControllerTest {
     public void testGetAllProducts() throws Exception {
         // Mocking the service response
         List<Product> products = Arrays.asList(new Product(), new Product());
-        when(productService.findAll()).thenReturn(products);
+        when(productService.findAll(null)).thenReturn(products);
 
         mockMvc.perform(get("/product/getAllProducts"))
                 .andExpect(status().isOk())
@@ -48,7 +48,7 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(products.size()));
 
-        verify(productService, times(1)).findAll();
+        verify(productService, times(1)).findAll(null);
     }
 
     @Test
