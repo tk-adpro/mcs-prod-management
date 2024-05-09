@@ -3,7 +3,9 @@ package id.ac.ui.cs.advprog.eshop.product.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import id.ac.ui.cs.advprog.eshop.product.model.Product;
 import id.ac.ui.cs.advprog.eshop.product.service.ProductService;
-
+import id.ac.ui.cs.advprog.eshop.product.service.SortByDate;
+import id.ac.ui.cs.advprog.eshop.product.service.SortByName;
+import id.ac.ui.cs.advprog.eshop.product.service.SortByPrice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -115,5 +117,98 @@ public class ProductControllerTest {
         verify(productService, times(1)).delete(productId);
     }
 
+    @Test
+    public void testGetAllProducts_SortByName() throws Exception {
+        List<Product> products = Arrays.asList(new Product(), new Product());
+        when(productService.findAll(any(SortByName.class))).thenReturn(products);
+
+        mockMvc.perform(get("/product/getAllProducts").param("sort", "SortByName"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(products.size()));
+
+        verify(productService, times(1)).findAll(any(SortByName.class));
+    }
+
+    @Test
+    public void testGetAllProducts_SortByDate() throws Exception {
+        List<Product> products = Arrays.asList(new Product(), new Product());
+        when(productService.findAll(any(SortByDate.class))).thenReturn(products);
+
+        mockMvc.perform(get("/product/getAllProducts").param("sort", "SortByDate"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(products.size()));
+
+        verify(productService, times(1)).findAll(any(SortByDate.class));
+    }
+
+    @Test
+    public void testGetAllProducts_SortByPrice() throws Exception {
+        List<Product> products = Arrays.asList(new Product(), new Product());
+        when(productService.findAll(any(SortByPrice.class))).thenReturn(products);
+
+        mockMvc.perform(get("/product/getAllProducts").param("sort", "SortByPrice"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(products.size()));
+
+        verify(productService, times(1)).findAll(any(SortByPrice.class));
+    }
+    @Test
+    public void testDeleteProduct_NotFound() throws Exception {
+        String productId = "nonExistentId";
+
+        when(productService.delete(productId)).thenReturn(false);
+
+        mockMvc.perform(delete("/product/deleteProduct/{productId}", productId))
+                .andExpect(status().isNotFound());
+
+        verify(productService, times(1)).delete(productId);
+    }
+
+    @Test
+    public void testUpdateProduct_NotFound() throws Exception {
+        String productId = "nonExistentId";
+        Product product = new Product();
+        product.setProductId(productId);
+
+        when(productService.findById(productId)).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/product/updateProduct/{productId}", productId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(product)))
+                .andExpect(status().isNotFound());
+
+        verify(productService, times(1)).findById(productId);
+        verify(productService, never()).update(any(Product.class));
+    }
+    @Test
+    public void testGetProductById_NotFound() throws Exception {
+        String productId = "nonExistentId";
+
+        when(productService.findById(productId)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/product/getProductById/{productId}", productId))
+                .andExpect(status().isNotFound());
+
+        verify(productService, times(1)).findById(productId);
+    }
+    @Test
+    public void testGetAllProducts_UndefinedSort() throws Exception {
+        List<Product> products = Arrays.asList(new Product(), new Product());
+        when(productService.findAll(any())).thenReturn(products); // expect any strategy
+
+        mockMvc.perform(get("/product/getAllProducts").param("sort", "undefinedSort"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(products.size()));
+
+        verify(productService, times(1)).findAll(any()); // verify that some sorting strategy is still used
+    }
 
 }

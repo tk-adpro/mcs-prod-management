@@ -68,4 +68,86 @@ class ProductTest {
     void testGetProductImage() {
         assertEquals(base64Image, this.product.getProductImage());
     }
+    @Test
+    void testEnsureProductId() {
+        Product newProduct = new Product();
+        assertNull(newProduct.getProductId(), "ProductId should initially be null");
+        newProduct.ensureProductId(); // Manually invoke the method to simulate @PrePersist
+        assertNotNull(newProduct.getProductId(), "ProductId should not be null after ensureProductId is called");
+        assertTrue(newProduct.getProductId().matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"),
+                "ProductId should be a valid UUID");
+    }
+
+    @Test
+    void testEnsureProductId_alreadySet() {
+        Product productWithId = new Product();
+        String preSetId = "eb558e9f-1c39-460e-8860-71af6af63bd6";
+        productWithId.setProductId(preSetId);
+        productWithId.ensureProductId(); // Ensure id is not changed
+        assertEquals(preSetId, productWithId.getProductId(), "ProductId should not change if already set");
+    }
+    @Test
+    void testEqualsAndHashCode() {
+        // Create two products with the same ID but different other attributes
+        Product product1 = new Product();
+        product1.setProductId("1");
+        product1.setProductName("Product A");
+        product1.setProductDescription("Description A");
+        product1.setProductPrice(100.0);
+        product1.setProductDiscount(10.0);
+        product1.setProductQuantity(50);
+        product1.setProductAddedDate(LocalDateTime.now());
+        product1.setProductImage(Base64.getEncoder().encodeToString("ImageA".getBytes()));
+
+        Product product2 = new Product();
+        product2.setProductId("1");
+        product2.setProductName("Product B"); // Different name
+        product2.setProductDescription("Description B"); // Different description
+        product2.setProductPrice(200.0); // Different price
+        product2.setProductDiscount(20.0); // Different discount
+        product2.setProductQuantity(100); // Different quantity
+        product2.setProductAddedDate(LocalDateTime.now().plusDays(1)); // Different date
+        product2.setProductImage(Base64.getEncoder().encodeToString("ImageB".getBytes()));
+
+        // Test equality based on ID
+        assertEquals(product1, product2, "Products with the same ID should be considered equal even if other attributes differ");
+
+        // Test hashCode consistency with equals
+        assertEquals(product1.hashCode(), product2.hashCode(), "Hash codes should be equal for equal objects");
+
+        // Create another product with a different ID
+        Product product3 = new Product();
+        product3.setProductId("2");
+        product3.setProductName("Product A");
+
+        // Ensure not equal to a different product ID
+        assertNotEquals(product1, product3, "Products with different IDs should not be considered equal");
+
+        // Test hashCode distinction
+        assertNotEquals(product1.hashCode(), product3.hashCode(), "Hash codes should not be equal for non-equal objects");
+
+        // Test self-equality
+        assertEquals(product1, product1, "A product should be equal to itself");
+
+        // Test equality with null and other objects
+        assertNotEquals(product1, null, "A product should not be equal to null");
+        assertNotEquals(product1, new Object(), "A product should not be equal to an object of a different type");
+    }
+    @Test
+    void testToString() {
+        Product product = new Product();
+        product.setProductId("1");
+        product.setProductName("Product");
+        String expectedString = "Product(productId=1, productName=Product, productDescription=null, productPrice=0.0, productDiscount=0.0, productQuantity=0, productAddedDate=null, productImage=null)";
+        assertEquals(expectedString, product.toString(), "toString should return the correct representation");
+    }
+    @Test
+    void testCanEqual() {
+        Product product = new Product();
+        Object otherObject = new Object();
+
+        assertTrue(product.canEqual(new Product()), "Product should be able to equal another product");
+        assertFalse(product.canEqual(otherObject), "Product should not be able to equal a generic Object");
+    }
+
 }

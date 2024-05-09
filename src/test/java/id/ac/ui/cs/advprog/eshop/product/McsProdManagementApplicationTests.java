@@ -1,10 +1,12 @@
 package id.ac.ui.cs.advprog.eshop.product;
 
-import org.junit.jupiter.api.Test; // Add missing import statement
+import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class McsProdManagementApplicationTests {
 
     @Test

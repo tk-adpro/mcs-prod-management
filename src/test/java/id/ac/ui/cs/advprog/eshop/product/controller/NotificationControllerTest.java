@@ -102,4 +102,33 @@ public class NotificationControllerTest {
 
         verify(notificationService, times(1)).update(eq("1"), any(Notification.class));
     }
+
+    @Test
+    public void testGetNotificationById_NotFound() throws Exception {
+        String notificationId = "nonExistentId";
+
+        when(notificationService.findById(notificationId)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/notification/getNotificationById/{notificationId}", notificationId))
+                .andExpect(status().isNotFound());
+
+        verify(notificationService, times(1)).findById(notificationId);
+    }
+    @Test
+    public void testUpdateNotification_NotFound() throws Exception {
+        String notificationId = "nonExistentId";
+        Notification notification = new Notification();
+        notification.setNotificationId(notificationId);
+
+        when(notificationService.findById(notificationId)).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/notification/updateNotification/{notificationId}", notificationId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(notification)))
+                .andExpect(status().isNotFound());
+
+        verify(notificationService, times(1)).findById(notificationId);
+        verify(notificationService, never()).update(anyString(), any(Notification.class));
+    }
+
 }
