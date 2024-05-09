@@ -16,26 +16,26 @@ public class NotificationController {
     @Autowired
     private NotificationService service;
 
-    @PostMapping("/createNotification")
+    @PostMapping("/admin/createNotification")
     public ResponseEntity<Notification> createNotification(@RequestBody Notification notification) {
         Notification createdNotification = service.create(notification);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdNotification);
     }
 
-    @GetMapping("/getAllNotification")
+    @GetMapping("/admin/getAllNotification")
     public ResponseEntity<List<Notification>> getAllNotification() {
         List<Notification> notifications = service.findAll();
         return ResponseEntity.ok(notifications);
     }
 
-    @GetMapping("/getNotificationById/{notificationId}")
+    @GetMapping("/admin/getNotificationById/{notificationId}")
     public ResponseEntity<Notification> getNotificationById(@PathVariable String notificationId) {
         return service.findById(notificationId)
                       .map(ResponseEntity::ok) // If found, return 200 OK with notification
                       .orElseGet(() -> ResponseEntity.notFound().build()); // If not found, return 404 Not Found
     }
 
-    @PutMapping("/updateNotification/{notificationId}")
+    @PutMapping("/admin/updateNotification/{notificationId}")
     public ResponseEntity<Notification> updateNotification(@PathVariable String notificationId, @RequestBody Notification notification) {
         return service.findById(notificationId)
                     .map(n -> {

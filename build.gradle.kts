@@ -43,29 +43,8 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
 
     implementation("org.springframework.boot:spring-boot-starter-security")
-    testImplementation("org.springframework.security:spring-security-test")
-    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
 }
-
-// dependencies {
-//     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
-//     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-//     implementation("org.springframework.boot:spring-boot-starter-jdbc")
-//     implementation("org.springframework.boot:spring-boot-starter-oauth2-authorization-server")
-//     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-//     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
-// //    implementation("org.springframework.boot:spring-boot-starter-security")
-//     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-//     implementation("org.springframework.boot:spring-boot-starter-web")
-// //    implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
-//     compileOnly("org.projectlombok:lombok")
-//     developmentOnly("org.springframework.boot:spring-boot-devtools")
-//     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-//     annotationProcessor("org.projectlombok:lombok")
-//     testImplementation("org.springframework.boot:spring-boot-starter-test")
-// //    testImplementation("org.springframework.security:spring-security-test")
-//     runtimeOnly("org.postgresql:postgresql")
-// }
 
 tasks.withType<Test> {
     useJUnitPlatform()

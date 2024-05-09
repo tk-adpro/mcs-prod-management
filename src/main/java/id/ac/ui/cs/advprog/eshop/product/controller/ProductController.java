@@ -45,7 +45,7 @@ public class ProductController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/createProduct")
+    @PostMapping("/admin/createProduct")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         Product createdProduct = service.create(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
@@ -58,10 +58,10 @@ public class ProductController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/deleteProduct/{productId}")
+    @DeleteMapping("/admin/deleteProduct/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable String productId) {
         return service.delete(productId) ? 
-            ResponseEntity.noContent().build() : 
+            ResponseEntity.noContent().build() :
             ResponseEntity.notFound().build();
     }
 }
