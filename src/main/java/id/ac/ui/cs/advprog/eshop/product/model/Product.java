@@ -13,6 +13,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
+import java.util.Objects;
 
 @Data
 @Getter
@@ -52,5 +53,21 @@ public class Product {
         if (productId == null) {
             productId = UUID.randomUUID().toString();
         }
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product)) return false;
+        Product pr = (Product) o;
+        return Objects.equals(productId, pr.productId);
+    }
+
+    public boolean canEqual(Object obj) {
+        return obj instanceof Product;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(productId);
     }
 }
