@@ -138,7 +138,7 @@ class ProductTest {
         Product product = new Product();
         product.setProductId("1");
         product.setProductName("Product");
-        String expectedString = "Product(productId=1, productName=Product, productDescription=null, productPrice=0.0, productDiscount=0.0, productQuantity=0, productAddedDate=null, productImage=null)";
+        String expectedString = "Product(productId=1, productName=Product, productDescription=null, productPrice=0.0, productDiscount=0.0, productQuantity=0, productAddedDate=null, productImage=null, notifications=null)";
         assertEquals(expectedString, product.toString(), "toString should return the correct representation");
     }
     @Test
