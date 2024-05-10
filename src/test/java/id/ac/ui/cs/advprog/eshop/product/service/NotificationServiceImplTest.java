@@ -34,7 +34,7 @@ class NotificationServiceImplTest {
         Product product = new Product();
         product.setProductId("p1");
         product.setProductName("Product 1");
-        notification.setProduct(product);
+        notification.setProductId(product.getProductId());
         notification.setNotificationId("n1");
         notification.setRead(false);
     }
@@ -54,7 +54,7 @@ class NotificationServiceImplTest {
         Product product2 = new Product();
         product2.setProductId("p2");
         product2.setProductName("Product 2");
-        notification2.setProduct(product2);
+        notification2.setProductId(product2.getProductId());
         notification2.setRead(false);
         when(notificationRepository.findAll()).thenReturn(Arrays.asList(notification, notification2));
 

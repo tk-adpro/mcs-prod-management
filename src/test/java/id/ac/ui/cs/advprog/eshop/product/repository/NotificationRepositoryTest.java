@@ -31,7 +31,7 @@ class NotificationRepositoryTest {
         product.setProductName("Boneka Doraemon");
         product.setProductQuantity( 100);
         notification.setNotificationId("notif123");
-        notification.setProduct(product);
+        notification.setProductId(product.getProductId());
         notification.setRead(false);
     }
 

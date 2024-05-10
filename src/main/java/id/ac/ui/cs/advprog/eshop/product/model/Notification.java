@@ -23,7 +23,7 @@ public class Notification {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private Product product;
+    private String productId;
 
     @Column(name = "is_read")
     private boolean isRead;

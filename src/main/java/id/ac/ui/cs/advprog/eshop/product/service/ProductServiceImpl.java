@@ -52,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
     public Product update(Product product) {
         if (product.getProductQuantity() == 0) {
             Notification notification = new Notification();
-            notification.setProduct(product);
+            notification.setProductId(product.getProductId());
             notification.setRead(false);
             notificationService.create(notification);
         }
