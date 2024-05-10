@@ -1,6 +1,12 @@
 name: Remove old artifacts
 
-on:
+on:  
+  push:
+    branches: 
+    - staging
+  pull_request:
+    branches: 
+    - staging
   schedule:
     # Every day at 1am
     - cron: '0 1 * * *'
