@@ -21,7 +21,7 @@ public class Notification {
     @Column(name = "notification_id", updatable = false, nullable = false)
     private String notificationId;
 
-    @ManyToOne(cascade = CascadeType.REMOVE) 
+    @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
 

@@ -14,6 +14,9 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import java.util.Objects;
+import jakarta.persistence.OneToMany;
+import java.util.Set;
+import jakarta.persistence.CascadeType;
 
 @Data
 @Getter
@@ -70,4 +73,8 @@ public class Product {
     public int hashCode() {
         return Objects.hash(productId);
     }
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Notification> notifications;
+
 }
