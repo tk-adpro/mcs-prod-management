@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -101,4 +102,18 @@ class NotificationRepositoryTest {
         Optional<Notification> result = notificationRepository.findById("nonexistent-id");
         assertFalse(result.isPresent());
     }
+    @Test
+    void testDeleteNotification_HappyPath() {
+        doNothing().when(notificationRepository).deleteById(notification.getNotificationId());
+        notificationRepository.deleteById(notification.getNotificationId());
+        verify(notificationRepository, times(1)).deleteById(notification.getNotificationId());
+    }
+    @Test
+    void testDeleteNotification_UnhappyPath_NonexistentId() {
+        doThrow(new IllegalArgumentException("Notification not found")).when(notificationRepository).deleteById("nonexistent-id");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> notificationRepository.deleteById("nonexistent-id"));
+        assertEquals("Notification not found", exception.getMessage());
+        verify(notificationRepository, times(1)).deleteById("nonexistent-id");
+    }
+    
 }

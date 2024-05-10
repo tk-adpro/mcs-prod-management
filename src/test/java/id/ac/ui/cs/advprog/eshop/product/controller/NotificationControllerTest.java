@@ -151,5 +151,35 @@ public class NotificationControllerTest {
         verify(notificationService, times(1)).findById(notificationId);
         verify(notificationService, never()).update(anyString(), any(Notification.class));
     }
+    @Test
+    @WithMockUser(username="admin", roles={"ADMIN"})
+    public void testDeleteNotification_Success() throws Exception {
+        String notificationId = "validNotificationId";
+        Notification notification = new Notification();
+        notification.setNotificationId(notificationId);
+
+        when(notificationService.findById(notificationId)).thenReturn(Optional.of(notification));
+        when(notificationService.delete(notificationId)).thenReturn(true); // Simulate successful deletion
+
+        mockMvc.perform(delete("/notification/admin/deleteNotification/{notificationId}", notificationId))
+                .andExpect(status().isNoContent());
+
+        verify(notificationService, times(1)).findById(notificationId);
+        verify(notificationService, times(1)).delete(notificationId);
+    }
+
+    @Test
+    @WithMockUser(username="admin", roles={"ADMIN"})
+    public void testDeleteNotification_NotFound() throws Exception {
+        String notificationId = "nonExistentId";
+
+        when(notificationService.findById(notificationId)).thenReturn(Optional.empty());
+
+        mockMvc.perform(delete("/notification/admin/deleteNotification/{notificationId}", notificationId))
+                .andExpect(status().isNotFound());
+
+        verify(notificationService, times(1)).findById(notificationId);
+        verify(notificationService, never()).delete(notificationId);
+    }
 
 }

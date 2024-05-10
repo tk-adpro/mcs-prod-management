@@ -104,4 +104,21 @@ class NotificationServiceImplTest {
         assertNotNull(result);
         verify(notificationRepository).save(updatedNotification);
     }
+    @Test
+    void testDeleteNotification_HappyPath() {
+        String notificationId = "n1";
+        doNothing().when(notificationRepository).deleteById(notificationId);
+        boolean result = notificationService.delete(notificationId);
+        verify(notificationRepository).deleteById(notificationId);
+        assertTrue(result);
+    }
+    @Test
+    void testDeleteNotification_UnhappyPath() {
+        String notificationId = "invalidId";
+        doThrow(new RuntimeException("Database error")).when(notificationRepository).deleteById(notificationId);
+        Exception exception = assertThrows(RuntimeException.class, () -> notificationService.delete(notificationId));
+        assertEquals("Database error", exception.getMessage());
+        verify(notificationRepository).deleteById(notificationId);
+    }
+    
 }
