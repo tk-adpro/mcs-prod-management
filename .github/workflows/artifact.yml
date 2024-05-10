@@ -15,6 +15,9 @@ jobs:
   remove-old-artifacts:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    contents: write
+    pull-requests: write
+    repository-projects: write
 
     steps:
     - name: Remove old artifacts
