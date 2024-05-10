@@ -51,7 +51,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
     }
 
-    @PutMapping("/updateProduct/{productId}")
+    @PutMapping("/admin/updateProduct/{productId}")
     public ResponseEntity<Product> updateProduct(@PathVariable String productId, @RequestBody Product product) {
         return service.findById(productId)
                 .map(p -> ResponseEntity.ok(service.update(product)))

@@ -9,22 +9,35 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.util.Optional;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class NotificationControllerTest {
+    @Autowired
+    private WebApplicationContext context;
 
-    @Mock
+    @MockBean
     private NotificationService notificationService;
 
     @InjectMocks
@@ -34,15 +47,18 @@ public class NotificationControllerTest {
 
     @BeforeEach
     public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(notificationController).build();
-    }
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(SecurityMockMvcConfigurers.springSecurity())  // Add this to apply Spring Security configuration
+                .build();    }
 
     @Test
+    @WithMockUser(username="admin", roles={"ADMIN"})
     public void testGetAllNotification() throws Exception {
         List<Notification> notifications = Arrays.asList(new Notification(), new Notification());
         when(notificationService.findAll()).thenReturn(notifications);
 
-        mockMvc.perform(get("/notification/getAllNotification"))
+        mockMvc.perform(get("/notification/admin/getAllNotification"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
@@ -52,6 +68,7 @@ public class NotificationControllerTest {
     }
 
     @Test
+    @WithMockUser(username="admin", roles={"ADMIN"})
     public void testGetNotificationById() throws Exception {
         String notificationId = "1";
         Notification notification = new Notification();
@@ -59,7 +76,7 @@ public class NotificationControllerTest {
 
         when(notificationService.findById(notificationId)).thenReturn(Optional.of(notification));
 
-        mockMvc.perform(get("/notification/getNotificationById/{notificationId}", notificationId))
+        mockMvc.perform(get("/notification/admin/getNotificationById/{notificationId}", notificationId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.notificationId").value(notificationId));
@@ -68,13 +85,14 @@ public class NotificationControllerTest {
     }
 
     @Test
+    @WithMockUser(username="admin", roles={"ADMIN"})
     public void testCreateNotification() throws Exception {
         Notification notification = new Notification();
         notification.setNotificationId("Id1");
 
         when(notificationService.create(any(Notification.class))).thenReturn(notification);
 
-        mockMvc.perform(post("/notification/createNotification")
+        mockMvc.perform(post("/notification/admin/createNotification")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(notification)))
                 .andExpect(status().isCreated())
@@ -85,6 +103,7 @@ public class NotificationControllerTest {
     }
 
     @Test
+    @WithMockUser(username="admin", roles={"ADMIN"})
     public void testUpdateNotification() throws Exception {
         String notificationId = "1";
         Notification notification = new Notification();
@@ -93,7 +112,7 @@ public class NotificationControllerTest {
         doReturn(Optional.of(notification)).when(notificationService).findById(notificationId);
         doReturn(notification).when(notificationService).update(eq(notificationId), any(Notification.class));
 
-        mockMvc.perform(put("/notification/updateNotification/{notificationId}", notificationId)
+        mockMvc.perform(put("/notification/admin/updateNotification/{notificationId}", notificationId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(notification)))
                 .andExpect(status().isOk())
@@ -104,17 +123,19 @@ public class NotificationControllerTest {
     }
 
     @Test
+    @WithMockUser(username="admin", roles={"ADMIN"})
     public void testGetNotificationById_NotFound() throws Exception {
         String notificationId = "nonExistentId";
 
         when(notificationService.findById(notificationId)).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/notification/getNotificationById/{notificationId}", notificationId))
+        mockMvc.perform(get("/notification/admin/getNotificationById/{notificationId}", notificationId))
                 .andExpect(status().isNotFound());
 
         verify(notificationService, times(1)).findById(notificationId);
     }
     @Test
+    @WithMockUser(username="admin", roles={"ADMIN"})
     public void testUpdateNotification_NotFound() throws Exception {
         String notificationId = "nonExistentId";
         Notification notification = new Notification();
@@ -122,7 +143,7 @@ public class NotificationControllerTest {
 
         when(notificationService.findById(notificationId)).thenReturn(Optional.empty());
 
-        mockMvc.perform(put("/notification/updateNotification/{notificationId}", notificationId)
+        mockMvc.perform(put("/notification/admin/updateNotification/{notificationId}", notificationId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(notification)))
                 .andExpect(status().isNotFound());
