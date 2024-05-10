@@ -1,23 +1,20 @@
 name: PMD Security Analysis
 
-## Run PMD jobs on all branches
 on:
   push:
-    branches: 
-    - staging
+    branches:
+      - staging
   pull_request:
-    branches: 
-    - staging
-# Declare default permissions as read only.
-permissions: read-all
+    branches:
+      - staging
+
+permissions:
+  contents: read
+  security-events: write
 
 jobs:
   pmd:
-    name: Run tests
     runs-on: ubuntu-22.04
-    permissions:
-      # required for all workflows
-      security-events: write
     steps:
       - name: Check out the Git repository
         uses: actions/checkout@v4
@@ -28,13 +25,14 @@ jobs:
           java-version: '21'
           cache: 'gradle'
       - uses: pmd/pmd-github-action@v1
-        id: pmd
         with:
           version: '7.0.0-rc4'
           sourcePath: 'src/main/java'
           rulesets: 'rulesets/java/quickstart.xml,ruleset.xml'
           analyzeModifiedFilesOnly: false
+          format: 'sarif'
+          outputFile: 'pmd-report.sarif'
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: pmd-report.sarifx
+          sarif_file: 'pmd-report.sarif'
