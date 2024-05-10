@@ -10,7 +10,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import java.util.UUID;
-import jakarta.persistence.CascadeType;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 @Getter
 @Setter
@@ -25,6 +27,7 @@ public class Notification {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @JsonProperty("isRead") 
     @Column(name = "is_read")
     private boolean isRead;
 
