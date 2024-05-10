@@ -33,4 +33,9 @@ public class NotificationServiceImpl implements NotificationService {
     public Notification update(String id, Notification updatedNotification) {
         return notificationRepository.save(updatedNotification); 
     }
+    @Override
+    public boolean delete(String productId) {
+        notificationRepository.deleteById(productId);
+        return true;
+    }
 }

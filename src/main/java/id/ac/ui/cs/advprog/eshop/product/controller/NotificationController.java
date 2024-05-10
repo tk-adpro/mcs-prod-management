@@ -44,4 +44,13 @@ public class NotificationController {
                     }) 
                       .orElseGet(() -> ResponseEntity.notFound().build()); // If not found, return 404 Not Found
     }
+    @DeleteMapping("/admin/deleteNotification/{notificationId}")
+    public ResponseEntity<?> deleteNotification(@PathVariable String notificationId) {
+        return service.findById(notificationId)
+                      .map(notification -> {
+                        service.delete(notificationId);
+                        return ResponseEntity.noContent().build(); // Return 204 No Content on successful delete
+                      })
+                      .orElseGet(() -> ResponseEntity.notFound().build()); // If not found, return 404 Not Found
+    }
 }

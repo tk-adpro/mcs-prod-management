@@ -10,4 +10,5 @@ public interface NotificationService {
     List<Notification> findAll();
     Optional<Notification> findById(String id);
     Notification update(String id, Notification updatedNotification);
+    boolean delete(String notificationId);
 }
