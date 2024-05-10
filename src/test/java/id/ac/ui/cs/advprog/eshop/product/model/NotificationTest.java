@@ -22,7 +22,7 @@ class NotificationTest {
 
         this.notification = new Notification();
         this.notification.setNotificationId("4842948f-83e2-4abe-8c77-25a42984ecbd");
-        this.notification.setProductId(this.product.getProductId());
+        this.notification.setProduct(this.product);
         this.notification.setRead(false);
     }
 
@@ -33,7 +33,7 @@ class NotificationTest {
 
     @Test
     void testGetProduct() {
-        assertEquals(product.getProductId(), notification.getProductId());
+        assertEquals(product.getProductId(), notification.getProduct().getProductId());
     }
 
     @Test
@@ -49,7 +49,7 @@ class NotificationTest {
     @Test
     void testInitializeUUID_NotSet() {
         Notification newNotification = new Notification();
-        newNotification.setProductId(new Product().getProductId());  // Assuming a product needs to be set
+        newNotification.setProduct(new Product());  // Assuming a product needs to be set
         newNotification.setRead(false);
 
         assertNull(newNotification.getNotificationId(), "NotificationId should initially be null");

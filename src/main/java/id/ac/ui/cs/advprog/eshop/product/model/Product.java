@@ -17,6 +17,7 @@ import java.util.Objects;
 import jakarta.persistence.OneToMany;
 import java.util.Set;
 import jakarta.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @Getter
@@ -73,7 +74,7 @@ public class Product {
     public int hashCode() {
         return Objects.hash(productId);
     }
-
+    @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Notification> notifications;
 
