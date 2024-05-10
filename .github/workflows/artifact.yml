@@ -10,21 +10,21 @@ on:
   schedule:
     # Every day at 1am
     - cron: '0 1 * * *'
+  
+  uses: actions/github-script@v6
+  id: artifact
+  with:
+    script: |
+      const res = await github.rest.actions.listArtifactsForRepo({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+      })
 
-jobs:
-  remove-old-artifacts:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: write
-      pull-requests: write
-      repository-projects: write
-
-    steps:
-    - name: Remove old artifacts
-      uses: c-hive/gha-remove-artifacts@v1
-      with:
-        age: '1 month' # '<number> <unit>', e.g. 5 days, 2 years, 90 seconds, parsed by Moment.js
-        # Optional inputs
-        # skip-tags: true
-        # skip-recent: 5
+      res.data.artifacts
+        .forEach(({ id }) => {
+          github.rest.actions.deleteArtifact({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            artifact_id: id,
+          })
+        })
