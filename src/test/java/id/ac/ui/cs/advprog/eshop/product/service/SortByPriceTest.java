@@ -3,26 +3,27 @@ package id.ac.ui.cs.advprog.eshop.product.service;
 import id.ac.ui.cs.advprog.eshop.product.model.Product;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import java.util.List;
 
 class SortByPriceTest extends ProductSortTestSetup {
 
     @Test
-    void testSortByPriceHappyPath() {
-        List<Product> sortedProducts = productService.findAll(new SortByPrice());
-        System.out.println(sortedProducts.get(0).getProductPrice());
-        System.out.println(sortedProducts.get(1).getProductPrice());
-        System.out.println(sortedProducts.get(2).getProductPrice());
+    void testSortByPriceHappyPath() throws ExecutionException, InterruptedException {
+        CompletableFuture<List<Product>> futureProducts = productService.findAll(new SortByPrice());
+        List<Product> sortedProducts = futureProducts.get(); // Wait for completion
 
-        assertEquals(0.75, sortedProducts.get(0).getProductPrice());
-        assertEquals(1.25, sortedProducts.get(1).getProductPrice());
-        assertEquals(1.50, sortedProducts.get(2).getProductPrice());
+        assertEquals(0.75, sortedProducts.get(0).getProductPrice(), 0.01);
+        assertEquals(1.25, sortedProducts.get(1).getProductPrice(), 0.01);
+        assertEquals(1.50, sortedProducts.get(2).getProductPrice(), 0.01);
     }
 
     @Test
-    void testSortByPriceUnhappyPath() {
-        List<Product> sortedProducts = productService.findAll(new SortByPrice());
-        assertNotEquals(1.25, sortedProducts.get(0).getProductPrice());
+    void testSortByPriceUnhappyPath() throws ExecutionException, InterruptedException {
+        CompletableFuture<List<Product>> futureProducts = productService.findAll(new SortByPrice());
+        List<Product> sortedProducts = futureProducts.get();
+        assertNotEquals(1.25, sortedProducts.get(0).getProductPrice(), 0.01);
     }
 }

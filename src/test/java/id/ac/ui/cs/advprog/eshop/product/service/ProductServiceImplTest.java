@@ -1,5 +1,4 @@
 package id.ac.ui.cs.advprog.eshop.product.service;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +11,8 @@ import id.ac.ui.cs.advprog.eshop.product.repository.ProductRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -38,53 +39,73 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void testCreateProduct() {
+    void testCreateProduct() throws ExecutionException, InterruptedException {
         when(productRepository.save(product)).thenReturn(product);
-        Product createdProduct = productService.create(product);
+        CompletableFuture<Product> createdProductFuture = productService.create(product);
+        Product createdProduct = createdProductFuture.get();
         verify(productRepository).save(product);
         assertEquals(product.getProductId(), createdProduct.getProductId());
     }
 
     @Test
-    void testFindAllProducts() {
+    void testFindAllProducts() throws ExecutionException, InterruptedException {
         Product product2 = new Product();
         product2.setProductId("p2");
         product2.setProductName("Product 2");
         when(productRepository.findAll()).thenReturn(List.of(product, product2));
 
-        List<Product> products = productService.findAll(null);
+        CompletableFuture<List<Product>> productsFuture = productService.findAll(null);
+        List<Product> products = productsFuture.get(); // Wait for future to complete
         assertEquals(2, products.size());
         assertTrue(products.contains(product) && products.contains(product2));
     }
 
+
     @Test
-    void testDeleteProductSuccess() {
-        doNothing().when(productRepository).deleteById(product.getProductId());
-        productService.delete(product.getProductId());
-        verify(productRepository).deleteById(product.getProductId());
+    void testDeleteProductSuccess() throws ExecutionException, InterruptedException {
+        String productId = "p1";
+        doNothing().when(productRepository).deleteById(productId);
+        CompletableFuture<Void> deleteResultFuture = productService.delete(productId);
+        deleteResultFuture.get();  // Ensure that the CompletableFuture completes without exception
+        verify(productRepository).deleteById(productId);  // Verify that deleteById was called
     }
 
     @Test
     void testDeleteProductFailure() {
-        doThrow(new IllegalArgumentException("Product not found")).when(productRepository).deleteById("p3");
-        assertThrows(IllegalArgumentException.class, () -> productService.delete("p3"));
-        verify(productRepository).deleteById("p3");
+        String productId = "p3";
+        doThrow(new IllegalArgumentException("Product not found")).when(productRepository).deleteById(productId);
+        assertThrows(IllegalArgumentException.class, () -> {
+            CompletableFuture<Void> deleteResultFuture = productService.delete(productId);
+            deleteResultFuture.get();  // This should throw an ExecutionException because of the IllegalArgumentException
+        });
+        verify(productRepository).deleteById(productId);  // Verify that deleteById was called
     }
 
     @Test
-    void testFindProductByIdFound() {
-        when(productRepository.findById(product.getProductId())).thenReturn(Optional.of(product));
-        Product foundProduct = productService.findById(product.getProductId()).orElse(null);
+    void testFindProductByIdFound() throws ExecutionException, InterruptedException {
+        Product expectedProduct = new Product(); // Example product setup
+        expectedProduct.setProductId("existingId");
+        when(productRepository.findById("existingId")).thenReturn(Optional.of(expectedProduct));
+
+        CompletableFuture<Product> foundProductFuture = productService.findById("existingId");
+        Product foundProduct = foundProductFuture.get(); // Wait for future to complete
+
         assertNotNull(foundProduct);
-        assertEquals(product.getProductId(), foundProduct.getProductId());
+        assertEquals(expectedProduct.getProductId(), foundProduct.getProductId());
     }
 
+
     @Test
-    void testFindProductByIdNotFound() {
+    void testFindProductByIdNotFound() throws ExecutionException, InterruptedException {
         when(productRepository.findById("unknown")).thenReturn(Optional.empty());
-        Optional<Product> foundProduct = productService.findById("unknown");
-        assertFalse(foundProduct.isPresent());
+
+        CompletableFuture<Product> foundProductFuture = productService.findById("unknown");
+        Product foundProduct = foundProductFuture.get(); // Wait for future to complete
+
+        assertNull(foundProduct);
     }
+
+
 
     @Test
     void testUpdateProduct() {
@@ -97,7 +118,8 @@ class ProductServiceImplTest {
     @Test
     void testUpdateProductWhenOutOfStock() {
         product.setProductQuantity(0);
-        when(notificationService.create(any())).thenReturn(new Notification());
+        Notification notification = new Notification();
+        when(notificationService.create(any())).thenReturn(notification);
         when(productRepository.save(product)).thenReturn(product);
 
         productService.update(product);

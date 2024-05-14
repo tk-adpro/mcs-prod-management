@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.HashSet;
+import java.util.Set;
 
 class ProductTest {
 
@@ -148,6 +150,22 @@ class ProductTest {
 
         assertTrue(product.canEqual(new Product()), "Product should be able to equal another product");
         assertFalse(product.canEqual(otherObject), "Product should not be able to equal a generic Object");
+    }
+    @Test
+    void testSetNotifications() {
+        Notification notification1 = new Notification();
+        notification1.setNotificationId("notif1");
+
+        Notification notification2 = new Notification();
+        notification2.setNotificationId("notif2");
+
+        Set<Notification> notifications = new HashSet<>();
+        notifications.add(notification1);
+        notifications.add(notification2);
+
+        product.setNotifications(notifications);
+
+        assertEquals(notifications, product.getNotifications(), "Notifications should be correctly set and retrieved");
     }
 
 }

@@ -5,6 +5,10 @@ import id.ac.ui.cs.advprog.eshop.product.model.Product;
 import id.ac.ui.cs.advprog.eshop.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
+
+import java.util.concurrent.CompletableFuture;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,29 +28,34 @@ public class ProductServiceImpl implements ProductService {
         this.sortStrategy = sortStrategy;
     }
 
+    @Async
     @Override
-    public Product create(Product product) {
-        return productRepository.save(product);
+    public CompletableFuture<Product> create(Product product) {
+        return CompletableFuture.supplyAsync(() -> productRepository.save(product));
     }
 
-    public List<Product> findAll(SortStrategy sorting) {
-        List<Product> allProducts = productRepository.findAll();
-        if (sorting != null) {
-            allProducts = sorting.sort(allProducts);
-        }
-        return allProducts;
+    public CompletableFuture<List<Product>> findAll(SortStrategy sorting) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<Product> allProducts = productRepository.findAll();
+            if (sorting != null) {
+                allProducts = sorting.sort(allProducts);
+            }
+            return allProducts;
+        });
     }
 
+    @Async
     @Override
-    public boolean delete(String productId) {
+    public CompletableFuture<Void> delete(String productId) {
         productRepository.deleteById(productId);
-        return true;
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public Optional<Product> findById(String productId) {
-        return productRepository.findById(productId);
+    public CompletableFuture<Product> findById(String productId) {
+        return CompletableFuture.completedFuture(productRepository.findById(productId).orElse(null));
     }
+
 
     @Override
     public Product update(Product product) {
