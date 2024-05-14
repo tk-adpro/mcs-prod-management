@@ -29,7 +29,7 @@ public class Notification {
 
     @JsonProperty("isRead") 
     @Column(name = "is_read")
-    private boolean isRead;
+    private boolean isRead = false;
 
     @PrePersist
     public void initializeUUID() {

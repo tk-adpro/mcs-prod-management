@@ -64,7 +64,7 @@ public class ProductControllerTest {
         List<Product> products = Arrays.asList(new Product(), new Product());
         when(productService.findAll(null)).thenReturn(products);
 
-        mockMvc.perform(get("/product/getAllProducts"))
+        mockMvc.perform(get("/product/public/getAllProducts"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
@@ -83,7 +83,7 @@ public class ProductControllerTest {
 
         when(productService.findById(productId)).thenReturn(Optional.of(product));
 
-        mockMvc.perform(get("/product/getProductById/{productId}", productId))
+        mockMvc.perform(get("/product/public/getProductById/{productId}", productId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.productId").value(productId));
@@ -148,7 +148,7 @@ public class ProductControllerTest {
         List<Product> products = Arrays.asList(new Product(), new Product());
         when(productService.findAll(any(SortByName.class))).thenReturn(products);
 
-        mockMvc.perform(get("/product/getAllProducts").param("sort", "SortByName"))
+        mockMvc.perform(get("/product/public/getAllProducts").param("sort", "SortByName"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
@@ -163,7 +163,7 @@ public class ProductControllerTest {
         List<Product> products = Arrays.asList(new Product(), new Product());
         when(productService.findAll(any(SortByDate.class))).thenReturn(products);
 
-        mockMvc.perform(get("/product/getAllProducts").param("sort", "SortByDate"))
+        mockMvc.perform(get("/product/public/getAllProducts").param("sort", "SortByDate"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
@@ -178,7 +178,7 @@ public class ProductControllerTest {
         List<Product> products = Arrays.asList(new Product(), new Product());
         when(productService.findAll(any(SortByPrice.class))).thenReturn(products);
 
-        mockMvc.perform(get("/product/getAllProducts").param("sort", "SortByPrice"))
+        mockMvc.perform(get("/product/public/getAllProducts").param("sort", "SortByPrice"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
@@ -223,7 +223,7 @@ public class ProductControllerTest {
 
         when(productService.findById(productId)).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/product/getProductById/{productId}", productId))
+        mockMvc.perform(get("/product/public/getProductById/{productId}", productId))
                 .andExpect(status().isNotFound());
 
         verify(productService, times(1)).findById(productId);
@@ -234,7 +234,7 @@ public class ProductControllerTest {
         List<Product> products = Arrays.asList(new Product(), new Product());
         when(productService.findAll(any())).thenReturn(products); // expect any strategy
 
-        mockMvc.perform(get("/product/getAllProducts").param("sort", "undefinedSort"))
+        mockMvc.perform(get("/product/public/getAllProducts").param("sort", "undefinedSort"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())

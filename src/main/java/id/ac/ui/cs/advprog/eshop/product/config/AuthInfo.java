@@ -11,4 +11,6 @@ public class AuthInfo {
     private String email;
     private String username;
     private List<String> authorities;
+    private String firstName;
+    private String lastName;
 }

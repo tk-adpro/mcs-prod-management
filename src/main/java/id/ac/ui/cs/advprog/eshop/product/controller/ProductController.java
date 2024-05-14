@@ -19,7 +19,7 @@ public class ProductController {
     @Autowired
     private ProductService service;
 
-    @GetMapping("/getAllProducts")
+    @GetMapping("public/getAllProducts")
     public ResponseEntity<List<Product>> getAllProducts(@RequestParam(required = false) String sort) {
         SortStrategy strategy = null;
         if (sort != null) {
@@ -38,7 +38,7 @@ public class ProductController {
         List<Product> products = service.findAll(strategy);
         return ResponseEntity.ok(products);
     }
-    @GetMapping("/getProductById/{productId}")
+    @GetMapping("/public/getProductById/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable String productId) {
         return service.findById(productId)
                 .map(ResponseEntity::ok)
