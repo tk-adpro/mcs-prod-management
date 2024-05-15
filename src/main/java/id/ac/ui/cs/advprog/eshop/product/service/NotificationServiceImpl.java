@@ -5,9 +5,8 @@ import id.ac.ui.cs.advprog.eshop.product.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -17,24 +16,26 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public Notification create(Notification notification) {
-        return notificationRepository.create(notification);
+        return notificationRepository.save(notification); 
     }
 
     @Override
     public List<Notification> findAll() {
-        Iterator<Notification> notificationIterator = notificationRepository.findAll();
-        List<Notification> allNotifications = new ArrayList<>();
-        notificationIterator.forEachRemaining(allNotifications::add);
-        return allNotifications;
+        return notificationRepository.findAll();
     }
 
     @Override
-    public Notification findById(String id) {
-        return notificationRepository.findById(id);
+    public Optional<Notification> findById(String id) {
+        return notificationRepository.findById(id); 
     }
 
     @Override
     public Notification update(String id, Notification updatedNotification) {
-        return notificationRepository.update(id, updatedNotification);
+        return notificationRepository.save(updatedNotification); 
+    }
+    @Override
+    public boolean delete(String productId) {
+        notificationRepository.deleteById(productId);
+        return true;
     }
 }

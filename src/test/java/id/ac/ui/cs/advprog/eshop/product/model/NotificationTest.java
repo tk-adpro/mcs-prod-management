@@ -33,7 +33,7 @@ class NotificationTest {
 
     @Test
     void testGetProduct() {
-        assertEquals(product, notification.getProduct());
+        assertEquals(product.getProductId(), notification.getProduct().getProductId());
     }
 
     @Test
@@ -45,5 +45,43 @@ class NotificationTest {
     void testSetRead() {
         notification.setRead(true);
         assertTrue(notification.isRead());
+    }
+    @Test
+    void testInitializeUUID_NotSet() {
+        Notification newNotification = new Notification();
+        newNotification.setProduct(new Product());  // Assuming a product needs to be set
+        newNotification.setRead(false);
+
+        assertNull(newNotification.getNotificationId(), "NotificationId should initially be null");
+
+        // Simulate the @PrePersist trigger
+        newNotification.initializeUUID();
+
+        assertNotNull(newNotification.getNotificationId(), "NotificationId should not be null after initializeUUID");
+        assertTrue(newNotification.getNotificationId().matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"),
+                "NotificationId should be a valid UUID");
+    }
+    @Test
+    void initializeUUID_WhenIdIsNull_ShouldGenerateNewUUID() {
+        Notification notification = new Notification();
+        // Do not set the notificationId, it should be null by default
+        assertNull(notification.getNotificationId(), "NotificationId should initially be null");
+
+        notification.initializeUUID(); // This should generate a new UUID
+
+        assertNotNull(notification.getNotificationId(), "NotificationId should not be null after initializeUUID");
+        assertTrue(notification.getNotificationId().matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"),
+                "NotificationId should be a valid UUID");
+    }
+
+    @Test
+    void initializeUUID_WhenIdIsNotNull_ShouldNotChangeExistingId() {
+        String existingId = "existing-uuid-1234";
+        Notification notification = new Notification();
+        notification.setNotificationId(existingId); // Explicitly setting an ID
+
+        notification.initializeUUID(); // This should not change the existing ID
+
+        assertEquals(existingId, notification.getNotificationId(), "NotificationId should remain unchanged after initializeUUID");
     }
 }
