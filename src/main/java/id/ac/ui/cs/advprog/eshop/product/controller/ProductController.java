@@ -47,11 +47,6 @@ public class ProductController {
                 .thenApply(ResponseEntity::ok);
     }
 
-//    @GetMapping("/public/getProductById/{productId}")
-//    public CompletableFuture<ResponseEntity<Product>> getProductById(@PathVariable String productId) {
-//        return service.findById(productId)
-//                .thenApply(product -> product.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build()));
-//    }
     @GetMapping("/public/getProductById/{productId}")
     public CompletableFuture<ResponseEntity<Product>> getProductById(@PathVariable String productId) {
         return service.findById(productId)
@@ -92,18 +87,15 @@ public class ProductController {
 
     @DeleteMapping("/admin/deleteProduct/{productId}")
     public CompletableFuture<ResponseEntity<?>> deleteProduct(@PathVariable String productId) {
-//        logger.info("Deleting product with ID {}", productId);
         return service.findById(productId)
                 .thenCompose(product -> {
                     if (product != null) {
                         logger.info("Product found: {}", product);
                         return service.delete(productId)
                                 .thenApply(voidResult -> {
-//                                    logger.info("Product with ID {} deleted successfully.", productId);
                                     return ResponseEntity.status(HttpStatus.ACCEPTED).body("Product with ID " + productId + " deleted successfully.");
                                 });
                     } else {
-//                        logger.warn("Product with ID {} not found.", productId);
                         return CompletableFuture.completedFuture(ResponseEntity.notFound().build());
                     }
                 });
