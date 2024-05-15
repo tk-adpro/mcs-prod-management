@@ -3,6 +3,7 @@ plugins {
     id("org.springframework.boot") version "3.2.4"
     id("io.spring.dependency-management") version "1.1.4"
     jacoco
+    id("org.sonarqube") version "4.4.1.3373"
 }
 
 group = "id.ac.ui.cs.advprog.eshop"
@@ -32,7 +33,8 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.projectlombok:lombok")
-
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("com.h2database:h2")
@@ -75,5 +77,12 @@ tasks.jacocoTestReport {
         html.outputLocation.set(
             layout.buildDirectory.dir("jacocoHtml")
         )
+    }
+}
+sonar {
+    properties {
+        property("sonar.projectKey", "tk-adpro-1_tk")
+        property("sonar.organization", "tk-adpro-1")
+        property("sonar.host.url", "https://sonarcloud.io")
     }
 }
