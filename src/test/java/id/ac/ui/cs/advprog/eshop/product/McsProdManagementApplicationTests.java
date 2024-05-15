@@ -9,8 +9,8 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 class McsProdManagementApplicationTests {
 
-//    @Test
-//    void contextLoads() {
-//    }
+    @Test
+    void contextLoads() {
+    }
 
 }

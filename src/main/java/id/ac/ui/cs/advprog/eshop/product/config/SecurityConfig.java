@@ -25,7 +25,9 @@ public class SecurityConfig {
                         .requestMatchers("/**/public/**").permitAll()
                         .requestMatchers("/**/admin/**").hasRole("ADMIN")
                         .requestMatchers("/**/customer/**").hasRole("CUSTOMER")
-                        .requestMatchers("/**/user/**").hasRole("USER")   
+                        .requestMatchers("/**/user/**").hasRole("USER")
+                        .requestMatchers("/actuator/**").permitAll()
+                        .anyRequest().authenticated()
                 ).addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
