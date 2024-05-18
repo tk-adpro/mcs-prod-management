@@ -161,9 +161,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ssh-key.pem ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_STATIC_IP }} "
             echo 'Checking uploaded files...' &&
             ls -al /home/${{ secrets.GCP_USERNAME }}/ &&
-            sudo chmod 666 /home/${{ secrets.GCP_USERNAME }}/.env &&
             echo 'Checking file permissions...' &&
-            ls -al /home/${{ secrets.GCP_USERNAME }}/.env &&
             echo 'Stopping existing container...' &&
             sudo docker stop ${{ secrets.CONTAINER_NAME }}  || true &&
             echo 'Removing existing container...' &&
