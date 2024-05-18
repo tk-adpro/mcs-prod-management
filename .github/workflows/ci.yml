@@ -172,8 +172,20 @@ jobs:
             echo 'Removing existing image...' &&
             sudo docker image rm -f ${{ secrets.REGISTRY_USER }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }}  || true &&
             echo 'Pulling new image...' &&
-            sudo docker pull ${{ secrets.REGISTRY_USER }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }} && 
+            sudo docker pull ${{ secrets.REGISTRY_USER }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }} &&
             echo 'Running new container...' &&
             sudo docker run --name ${{ secrets.CONTAINER_NAME }} --restart unless-stopped -d -p 80:8080 ${{ secrets.REGISTRY_USER }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }} &&
+            echo 'Setting up and running Docker Compose services...' &&
+            cd ~ && sudo docker compose up -d &&
             echo 'Deployment complete.' &&
             exit"
+
+      - name: Deploy monitoring with docker-compose
+        run: |
+          scp -i ssh-key.pem docker-compose.yml ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_STATIC_IP }}:/opt/rasukan
+          ssh -i ssh-key.pem ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_STATIC_IP }} "
+            cd /opt/rasukan &&
+            echo 'Pulling latest images and redeploying services...' &&
+            docker-compose pull &&
+            docker-compose down &&
+            docker-compose up -d"
