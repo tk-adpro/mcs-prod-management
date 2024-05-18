@@ -182,7 +182,7 @@ jobs:
             echo 'Running new container...' &&
             sudo docker run --name ${{ secrets.CONTAINER_NAME }} --restart unless-stopped -d -p 80:8080 ${{ secrets.REGISTRY_USER }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }} &&
             echo 'Setting up and running Docker Compose services...' &&
-            cd /home/${{ secrets.GCP_USERNAME }} && sudo docker compose up -d &&
+            sudo cd /home/${{ secrets.GCP_USERNAME }} && sudo docker compose up -d &&
             echo 'Deployment complete.' &&
             exit"
 
