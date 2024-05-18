@@ -165,12 +165,13 @@ jobs:
       - name: Deploy to GCP
         run: |
           scp -o StrictHostKeyChecking=no -i ssh-key.pem -r ./.env ./docker-compose.yml ./monitoring ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_STATIC_IP }}:~/
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_STATIC_IP }} " &&
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_STATIC_IP }} "
+            echo 'Setting permissions for .env file...' &&
             chmod 644 ~/.env &&
             echo 'Stopping existing container...' &&
-            sudo docker stop ${{ secrets.CONTAINER_NAME }}  || true && 
+            sudo docker stop ${{ secrets.CONTAINER_NAME }}  || true &&
             echo 'Removing existing container...' &&
-            sudo docker container rm -f ${{ secrets.CONTAINER_NAME }}  || true && 
+            sudo docker container rm -f ${{ secrets.CONTAINER_NAME }}  || true &&
             echo 'Removing existing image...' &&
             sudo docker image rm -f ${{ secrets.REGISTRY_USER }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }}  || true &&
             echo 'Pulling new image...' &&
@@ -178,6 +179,6 @@ jobs:
             echo 'Running new container...' &&
             sudo docker run --name ${{ secrets.CONTAINER_NAME }} --restart unless-stopped -d -p 80:8080 ${{ secrets.REGISTRY_USER }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }} &&
             echo 'Setting up and running Docker Compose services...' &&
-            sudo docker compose up -d &&
+            cd ~ && sudo docker compose up -d &&
             echo 'Deployment complete.' &&
             exit"
