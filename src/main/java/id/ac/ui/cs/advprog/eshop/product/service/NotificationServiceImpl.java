@@ -11,8 +11,13 @@ import java.util.Optional;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
-    @Autowired
+
+
     private NotificationRepository notificationRepository;
+    @Autowired
+    public NotificationServiceImpl(NotificationRepository notificationRepository){
+        this.notificationRepository = notificationRepository;
+    }
 
     @Override
     public Notification create(Notification notification) {

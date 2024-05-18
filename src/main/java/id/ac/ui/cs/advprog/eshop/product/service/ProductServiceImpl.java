@@ -16,12 +16,15 @@ import java.util.Optional;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
 
-    @Autowired
+    private ProductRepository productRepository;
     private NotificationService notificationService;
 
+    @Autowired
+    public ProductServiceImpl(ProductRepository productRepository, NotificationService notificationService){
+        this.productRepository = productRepository;
+        this.notificationService = notificationService;
+    }
     private SortStrategy sortStrategy;
 
     public void setSortStrategy(SortStrategy sortStrategy) {

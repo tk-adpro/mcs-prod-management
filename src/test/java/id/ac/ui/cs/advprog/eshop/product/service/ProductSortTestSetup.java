@@ -21,7 +21,7 @@ public abstract class ProductSortTestSetup {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        productService = new ProductServiceImpl();
+        productService = new ProductServiceImpl(productRepository, null);
         productService.setProductRepository(productRepository);
         productService.setSortStrategy(sortStrategy);
 

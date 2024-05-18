@@ -13,8 +13,12 @@ import org.springframework.http.HttpStatus;
 @RequestMapping("/notification")
 public class NotificationController {
 
-    @Autowired
+
     private NotificationService service;
+    @Autowired
+    public NotificationController(NotificationService service){
+        this.service = service;
+    }
 
     @PostMapping("/admin/createNotification")
     public ResponseEntity<Notification> createNotification(@RequestBody Notification notification) {
