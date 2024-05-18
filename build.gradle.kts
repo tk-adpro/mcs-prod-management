@@ -65,7 +65,6 @@ afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.map {
             fileTree(it) {
                 exclude("**/config/**")
-                exclude("**/utils/**")
                 exclude("**/McsProdManagementApplication.class")
             }
         }))
