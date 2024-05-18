@@ -1,14 +1,13 @@
 name: Sonar Integration
 
+## Run CI jobs on all branches by default
 on:
   push:
     branches:
       - staging
-      - branch-staging
   pull_request:
     branches:
       - staging
-      - branch-staging
 
 jobs:
   sonar:
@@ -32,16 +31,10 @@ jobs:
         with:
           path: ~/.gradle/cache
           key: ${{ runner.os }}-gradle
-          restore-keys: |
-            ${{ runner.os }}-gradle
-      - name: Ensure Gradle Cache Directory Exists
-        run: mkdir -p ~/.gradle/cache
       - name: Set gradlew as executable
         run: chmod +x ./gradlew
-      - name: Run Tests
-        run: ./gradlew test
       - name: Sonar Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: ./gradlew sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} -Dsonar.junit.reportPaths=build/test-results/test
+        run: ./gradlew test sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
