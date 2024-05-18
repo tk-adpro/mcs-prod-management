@@ -19,12 +19,9 @@ import org.slf4j.LoggerFactory;
 @RequestMapping("/product")
 public class ProductController {
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
-
-    private ProductService service;
     @Autowired
-    public ProductController(ProductService service){
-        this.service = service;
-    }
+    private ProductService service;
+
 
     @GetMapping("/public/getAllProducts")
     public CompletableFuture<ResponseEntity<List<Product>>> getAllProducts(@RequestParam(required = false) String sort) {
