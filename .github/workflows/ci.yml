@@ -168,7 +168,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ssh-key.pem ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_STATIC_IP }} "
             echo 'Checking uploaded files...' &&
             ls -al /home/${{ secrets.GCP_USERNAME }}/ &&
-            sudo chmod 644 /home/${{ secrets.GCP_USERNAME }}/.env &&
+            sudo chmod 666 /home/${{ secrets.GCP_USERNAME }}/.env &&
             echo 'Checking file permissions...' &&
             ls -al /home/${{ secrets.GCP_USERNAME }}/.env &&
             echo 'Stopping existing container...' &&
@@ -182,7 +182,7 @@ jobs:
             echo 'Running new container...' &&
             sudo docker run --name ${{ secrets.CONTAINER_NAME }} --restart unless-stopped -d -p 80:8080 ${{ secrets.REGISTRY_USER }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }} &&
             echo 'Setting up and running Docker Compose services...' &&
-            sudo cd /home/${{ secrets.GCP_USERNAME }} && sudo docker compose up -d &&
+            sudo docker compose up -d &&
             echo 'Deployment complete.' &&
             exit"
 
