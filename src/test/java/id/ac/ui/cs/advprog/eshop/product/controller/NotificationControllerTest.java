@@ -30,7 +30,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class NotificationControllerTest {
+class NotificationControllerTest {
     @Autowired
     private WebApplicationContext context;
 
@@ -43,7 +43,7 @@ public class NotificationControllerTest {
     private MockMvc mockMvc;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(SecurityMockMvcConfigurers.springSecurity())  // Add this to apply Spring Security configuration
@@ -51,7 +51,7 @@ public class NotificationControllerTest {
 
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
-    public void testGetAllNotification() throws Exception {
+    void testGetAllNotification() throws Exception {
         List<Notification> notifications = Arrays.asList(new Notification(), new Notification());
         when(notificationService.findAll()).thenReturn(notifications);
 
@@ -66,7 +66,7 @@ public class NotificationControllerTest {
 
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
-    public void testGetNotificationById() throws Exception {
+    void testGetNotificationById() throws Exception {
         String notificationId = "1";
         Notification notification = new Notification();
         notification.setNotificationId(notificationId);
@@ -83,7 +83,7 @@ public class NotificationControllerTest {
 
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
-    public void testCreateNotification() throws Exception {
+    void testCreateNotification() throws Exception {
         Notification notification = new Notification();
         notification.setNotificationId("Id1");
 
@@ -101,7 +101,7 @@ public class NotificationControllerTest {
 
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
-    public void testUpdateNotification() throws Exception {
+    void testUpdateNotification() throws Exception {
         String notificationId = "1";
         Notification notification = new Notification();
         notification.setNotificationId(notificationId);
@@ -121,7 +121,7 @@ public class NotificationControllerTest {
 
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
-    public void testGetNotificationById_NotFound() throws Exception {
+    void testGetNotificationById_NotFound() throws Exception {
         String notificationId = "nonExistentId";
 
         when(notificationService.findById(notificationId)).thenReturn(Optional.empty());
@@ -133,7 +133,7 @@ public class NotificationControllerTest {
     }
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
-    public void testUpdateNotification_NotFound() throws Exception {
+    void testUpdateNotification_NotFound() throws Exception {
         String notificationId = "nonExistentId";
         Notification notification = new Notification();
         notification.setNotificationId(notificationId);
@@ -150,7 +150,7 @@ public class NotificationControllerTest {
     }
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
-    public void testDeleteNotification_Success() throws Exception {
+    void testDeleteNotification_Success() throws Exception {
         String notificationId = "validNotificationId";
         Notification notification = new Notification();
         notification.setNotificationId(notificationId);
@@ -167,7 +167,7 @@ public class NotificationControllerTest {
 
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
-    public void testDeleteNotification_NotFound() throws Exception {
+    void testDeleteNotification_NotFound() throws Exception {
         String notificationId = "nonExistentId";
 
         when(notificationService.findById(notificationId)).thenReturn(Optional.empty());

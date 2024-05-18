@@ -38,7 +38,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.concurrent.ExecutionException;
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ProductControllerTest {
+class ProductControllerTest {
     @Autowired
     private WebApplicationContext context;
 
@@ -53,7 +53,7 @@ public class ProductControllerTest {
     private MockMvc mockMvc;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(SecurityMockMvcConfigurers.springSecurity())  // Add this to apply Spring Security configuration
@@ -62,7 +62,7 @@ public class ProductControllerTest {
 
     @Test
     @WithMockUser(username="user", roles={"USER"})
-    public void testGetAllProducts() throws Exception {
+    void testGetAllProducts() throws Exception {
         List<Product> products = Arrays.asList(new Product(), new Product());
         CompletableFuture<List<Product>> futureProducts = CompletableFuture.completedFuture(products);
         when(productService.findAll(null)).thenReturn(futureProducts); // Return CompletableFuture directly
@@ -75,7 +75,7 @@ public class ProductControllerTest {
 
     @Test
     @WithMockUser(username="user", roles={"USER"})
-    public void testGetProductById() throws Exception {
+    void testGetProductById() throws Exception {
         String productId = "123";
         Product product = new Product();
         product.setProductId(productId);
@@ -92,7 +92,7 @@ public class ProductControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testCreateProduct() throws Exception {
+    void testCreateProduct() throws Exception {
         String productId = "123";
         Product product = new Product();
         product.setProductId(productId);
@@ -113,9 +113,9 @@ public class ProductControllerTest {
 
         verify(productService, times(1)).create(any(Product.class));
     }
-      @Test
+    @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testUpdateProductWithException() throws Exception {
+    void testUpdateProductWithException() throws Exception {
         String productId = "1";
         Product product = new Product();
         product.setProductId(productId);
@@ -136,7 +136,7 @@ public class ProductControllerTest {
     }
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
-    public void testUpdateProduct() throws Exception {
+    void testUpdateProduct() throws Exception {
         String productId = "1";
         Product product = new Product();
         product.setProductId(productId);
@@ -156,7 +156,7 @@ public class ProductControllerTest {
     }
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testDeleteProduct() throws Exception {
+    void testDeleteProduct() throws Exception {
         String productId = "123";
         Product product = new Product();
         product.setProductId(productId);
@@ -178,7 +178,7 @@ public class ProductControllerTest {
 
     @Test
     @WithMockUser(username="user", roles={"USER"})
-    public void testGetAllProducts_SortByName() throws Exception {
+    void testGetAllProducts_SortByName() throws Exception {
         List<Product> products = Arrays.asList(new Product(), new Product());
         CompletableFuture<List<Product>> futureProducts = CompletableFuture.completedFuture(products);
 
@@ -193,7 +193,7 @@ public class ProductControllerTest {
 
     @Test
     @WithMockUser(username="user", roles={"USER"})
-    public void testGetAllProducts_SortByDate() throws Exception {
+    void testGetAllProducts_SortByDate() throws Exception {
         List<Product> products = Arrays.asList(new Product(), new Product());
         CompletableFuture<List<Product>> futureProducts = CompletableFuture.completedFuture(products);
 
@@ -209,7 +209,7 @@ public class ProductControllerTest {
 
     @Test
     @WithMockUser(username="user", roles={"USER"})
-    public void testGetAllProducts_SortByPrice() throws Exception {
+    void testGetAllProducts_SortByPrice() throws Exception {
         List<Product> products = Arrays.asList(new Product(), new Product());
         CompletableFuture<List<Product>> futureProducts = CompletableFuture.completedFuture(products);
 
@@ -224,7 +224,7 @@ public class ProductControllerTest {
 
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
-    public void testDeleteProduct_NotFound() throws Exception {
+    void testDeleteProduct_NotFound() throws Exception {
         String productId = "123";
 
         CompletableFuture<Product> futureProduct = CompletableFuture.completedFuture(null);
@@ -239,7 +239,7 @@ public class ProductControllerTest {
 
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
-    public void testUpdateProduct_NotFound() throws Exception {
+    void testUpdateProduct_NotFound() throws Exception {
         String productId = "nonExistentId";
         Product product = new Product();
         product.setProductId(productId);
@@ -257,7 +257,7 @@ public class ProductControllerTest {
     }
     @Test
     @WithMockUser(username="user", roles={"USER"})
-    public void testGetProductById_NotFound() throws Exception {
+    void testGetProductById_NotFound() throws Exception {
         String productId = "nonExistentId";
 
         // Return null wrapped in a CompletableFuture to simulate "not found"
@@ -272,7 +272,7 @@ public class ProductControllerTest {
 
     @Test
     @WithMockUser(username="user", roles={"USER"})
-    public void testGetAllProducts_UndefinedSort() throws Exception {
+    void testGetAllProducts_UndefinedSort() throws Exception {
         List<Product> products = Arrays.asList(new Product(), new Product());
         CompletableFuture<List<Product>> futureProducts = CompletableFuture.completedFuture(products);
 
