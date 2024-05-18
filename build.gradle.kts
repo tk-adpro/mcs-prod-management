@@ -81,7 +81,7 @@ tasks.jacocoTestReport {
 }
 sonar {
     properties {
-        property("sonar.projectKey", "tk-adpro-1_tk")
+        property("sonar.projectKey", "tk-adpro_mcs-prod-management")
         property("sonar.organization", "tk-adpro-1")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.junit.reportPaths", "${project.buildDir}/test-results/test")
