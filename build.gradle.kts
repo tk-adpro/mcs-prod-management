@@ -58,27 +58,25 @@ tasks.test {
     useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 }
-tasks.jacocoTestReport {
-    classDirectories.setFrom(
-        files(
-            classDirectories.files.map {
-                fileTree(it) { 
-                    exclude("**/*Application**") 
-                    }
-            }
-        )
-    )
 
-    dependsOn(tasks.test) // tests are required to run before generating the report
-    
-    reports {
-        html.required = true
-        xml.required = true
-        html.outputLocation.set(
-            layout.buildDirectory.dir("jacocoHtml")
-        )
+afterEvaluate {
+    tasks.jacocoTestReport {
+        dependsOn(tasks.test)
+        classDirectories.setFrom(files(classDirectories.files.map {
+            fileTree(it) {
+                exclude("**/config/**")
+                exclude("**/utils/**")
+                exclude("**/McsProdManagementApplication.class")
+            }
+        }))
+        reports {
+            xml.required = true
+            html.required = true
+            html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
+        }
     }
 }
+
 sonar {
     properties {
         property("sonar.projectKey", "tk-adpro_mcs-prod-management")
