@@ -164,7 +164,8 @@ jobs:
 
       - name: Deploy to GCP
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem -r ./.env ./docker-compose.yml ./monitoring ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_STATIC_IP }} "
+          scp -o StrictHostKeyChecking=no -i ssh-key.pem -r ./.env ./docker-compose.yml ./monitoring ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_STATIC_IP }}:~/
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_STATIC_IP }} "
             echo 'Stopping existing container...' &&
             sudo docker stop ${{ secrets.CONTAINER_NAME }}  || true && 
             echo 'Removing existing container...' &&
@@ -179,3 +180,9 @@ jobs:
             cd ~ && sudo docker compose up -d &&
             echo 'Deployment complete.' &&
             exit"
+      - name: Debugging
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ${{ secrets.GCP_USERNAME }}@${{ secrets.GCP_STATIC_IP }} "
+            ls -al ~/
+            cat ~/docker-compose.yml
+            ls -al ~/monitoring"
