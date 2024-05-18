@@ -23,7 +23,6 @@ public abstract class ProductSortTestSetup {
         MockitoAnnotations.openMocks(this);
         productService = new ProductServiceImpl(productRepository, null);
         productService.setProductRepository(productRepository);
-        productService.setSortStrategy(sortStrategy);
 
         List<Product> products = new ArrayList<>();
         Product product1 = new Product();

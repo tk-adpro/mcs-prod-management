@@ -2,7 +2,6 @@ package id.ac.ui.cs.advprog.eshop.product.controller;
 
 import id.ac.ui.cs.advprog.eshop.product.model.Notification;
 import id.ac.ui.cs.advprog.eshop.product.service.NotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +12,11 @@ import org.springframework.http.HttpStatus;
 @RequestMapping("/notification")
 public class NotificationController {
 
-    @Autowired
-    private NotificationService service;
+    private final NotificationService service;
+
+    public NotificationController(NotificationService service) {
+        this.service = service;
+    }
 
     @PostMapping("/admin/createNotification")
     public ResponseEntity<Notification> createNotification(@RequestBody Notification notification) {

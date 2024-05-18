@@ -6,7 +6,6 @@ import id.ac.ui.cs.advprog.eshop.product.service.SortStrategy;
 import id.ac.ui.cs.advprog.eshop.product.service.SortByDate;
 import id.ac.ui.cs.advprog.eshop.product.service.SortByName;
 import id.ac.ui.cs.advprog.eshop.product.service.SortByPrice;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -19,8 +18,11 @@ import org.slf4j.LoggerFactory;
 @RequestMapping("/product")
 public class ProductController {
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
-    @Autowired
-    private ProductService service;
+    private final ProductService service;
+
+    public ProductController(ProductService service) {
+        this.service = service;
+    }
 
 
     @GetMapping("/public/getAllProducts")
