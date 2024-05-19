@@ -6,7 +6,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./monitoring/promotheus:/etc/prometheus/
+      - ./monitoring/prometheus:/etc/prometheus/
 
   grafana:
     image: grafana/grafana:9.5.2
