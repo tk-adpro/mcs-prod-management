@@ -19,7 +19,6 @@ import java.util.Set;
 import jakarta.persistence.CascadeType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Data
 @Getter
 @Setter
 @NoArgsConstructor

@@ -136,14 +136,6 @@ class ProductTest {
         assertNotEquals(product1, new Object(), "A product should not be equal to an object of a different type");
     }
     @Test
-    void testToString() {
-        Product product = new Product();
-        product.setProductId("1");
-        product.setProductName("Product");
-        String expectedString = "Product(productId=1, productName=Product, productDescription=null, productPrice=0.0, productDiscount=0.0, productQuantity=0, productAddedDate=null, productImage=null, notifications=null)";
-        assertEquals(expectedString, product.toString(), "toString should return the correct representation");
-    }
-    @Test
     void testCanEqual() {
         Product product = new Product();
         Object otherObject = new Object();
