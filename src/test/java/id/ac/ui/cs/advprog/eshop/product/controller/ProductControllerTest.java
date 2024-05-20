@@ -281,6 +281,33 @@ class ProductControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         verify(productServices, times(1)).findById(productId);
     }
+    @Test
+    @WithMockUser(username="user", roles={"USER"})
+    void testGetAllProducts_NullSortExplicit() throws Exception {
+        List<Product> products = Arrays.asList(new Product(), new Product());
+        CompletableFuture<List<Product>> futureProducts = CompletableFuture.completedFuture(products);
+
+        when(productService.findAll(null)).thenReturn(futureProducts);
+
+        mockMvc.perform(get("/product/public/getAllProducts").param("sort", (String) null))
+                .andExpect(status().isOk());
+
+        verify(productService, times(1)).findAll(null); // Verify that null was explicitly handled
+    }
+
+    @Test
+    @WithMockUser(username="user", roles={"USER"})
+    void testGetAllProducts_NoSortParam() throws Exception {
+        List<Product> products = Arrays.asList(new Product(), new Product());
+        CompletableFuture<List<Product>> futureProducts = CompletableFuture.completedFuture(products);
+
+        when(productService.findAll(null)).thenReturn(futureProducts);
+
+        mockMvc.perform(get("/product/public/getAllProducts"))
+                .andExpect(status().isOk());
+
+        verify(productService, times(1)).findAll(null); // Verify that no sort parameter results in no sorting strategy
+    }
 
 
     @Test
