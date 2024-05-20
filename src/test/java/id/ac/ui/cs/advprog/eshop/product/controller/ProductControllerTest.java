@@ -72,7 +72,20 @@ class ProductControllerTest {
 
         verify(productService, times(1)).findAll(null);
     }
+    @Test
+    @WithMockUser(username="user", roles={"USER"})
+    void testGetAllProducts_InvalidSort() throws Exception {
+        List<Product> products = Arrays.asList(new Product(), new Product());
+        CompletableFuture<List<Product>> futureProducts = CompletableFuture.completedFuture(products);
 
+        // Assuming the service method will handle an invalid sort gracefully or ignore it
+        when(productService.findAll(null)).thenReturn(futureProducts);  // No sorting strategy applied
+
+        mockMvc.perform(get("/product/public/getAllProducts").param("sort", "invalidSort"))
+                .andExpect(status().isOk());
+
+        verify(productService, times(1)).findAll(null);  // Verify that no sorting strategy was applied
+    }
     @Test
     @WithMockUser(username="user", roles={"USER"})
     void testGetProductById() throws Exception {
