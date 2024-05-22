@@ -80,7 +80,7 @@ public class ProductController {
                 });
 
         try {
-            return response.get(); 
+            return response.get();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }

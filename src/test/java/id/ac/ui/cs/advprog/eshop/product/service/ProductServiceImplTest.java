@@ -100,7 +100,7 @@ class ProductServiceImplTest {
         when(productRepository.findById("unknown")).thenReturn(Optional.empty());
 
         CompletableFuture<Product> foundProductFuture = productService.findById("unknown");
-        Product foundProduct = foundProductFuture.get(); // Wait for future to complete
+        Product foundProduct = foundProductFuture.get();
 
         assertNull(foundProduct);
     }
@@ -109,21 +109,17 @@ class ProductServiceImplTest {
 
     @Test
     void testUpdateProduct() {
-        // Mocking the existing product found in the repository
         Product existingProduct = new Product();
         existingProduct.setProductId("12345");
         when(productRepository.findById("12345")).thenReturn(Optional.of(existingProduct));
         when(productRepository.save(any(Product.class))).thenReturn(existingProduct);
 
-        // The product to update
         Product productToUpdate = new Product();
         productToUpdate.setProductId("12345");
         productToUpdate.setProductName("New Name");
 
-        // Call the update method
         Product updatedProduct = productService.update(productToUpdate);
 
-        // Verify that the repository's save method was called with the existing product
         verify(productRepository).save(existingProduct);
         assertEquals("12345", updatedProduct.getProductId());
         assertEquals("New Name", existingProduct.getProductName());
@@ -138,22 +134,30 @@ class ProductServiceImplTest {
         existingProduct.setProductId("12345");
         existingProduct.setProductQuantity(0); // Out of stock
 
-        // When productRepository.findById is called, return the existing product
         when(productRepository.findById("12345")).thenReturn(Optional.of(existingProduct));
-        // Assume save operation returns the product successfully
         when(productRepository.save(any(Product.class))).thenReturn(existingProduct);
 
         // Notification mock
         Notification notification = new Notification();
         when(notificationService.create(any(Notification.class))).thenReturn(notification);
 
-        // Perform the update
         productService.update(existingProduct);
 
-        // Verify the notification was created
         verify(notificationService).create(any(Notification.class));
-        // Verify save was called on the repository
         verify(productRepository).save(existingProduct);
     }
+    @Test
+    void testUpdateProductNotFound() {
+        Product productToUpdate = new Product();
+        productToUpdate.setProductId("nonExistingId");
+
+        when(productRepository.findById("nonExistingId")).thenReturn(Optional.empty());
+
+        Product result = productService.update(productToUpdate);
+
+        verify(productRepository, never()).save(any(Product.class));
+        assertNull(result, "Product should be null when not found in the repository");
+    }
+
 
 }

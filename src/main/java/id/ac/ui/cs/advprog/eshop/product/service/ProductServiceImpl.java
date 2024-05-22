@@ -58,7 +58,6 @@ public class ProductServiceImpl implements ProductService {
         if (existingProductOpt.isPresent()) {
             Product existingProduct = existingProductOpt.get();
 
-            // Update fields from incoming product to existing product
             existingProduct.setProductName(incomingProduct.getProductName());
             existingProduct.setProductDescription(incomingProduct.getProductDescription());
             existingProduct.setProductPrice(incomingProduct.getProductPrice());
@@ -67,22 +66,18 @@ public class ProductServiceImpl implements ProductService {
             existingProduct.setProductAddedDate(incomingProduct.getProductAddedDate());
             existingProduct.setProductImage(incomingProduct.getProductImage());
 
-            // Check for notification condition
             if (incomingProduct.getProductQuantity() == 0) {
                 Notification notification = new Notification();
-                notification.setProduct(existingProduct); // Refer to the existing product
+                notification.setProduct(existingProduct);
                 notification.setRead(false);
                 notificationService.create(notification);
             }
-
-            // Save the updated product
             return productRepository.save(existingProduct);
         }
-
-        // Return null or handle the case where the product does not exist
         return null;
     }
     public void setProductRepository(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+
 }
