@@ -78,7 +78,6 @@ class ProductControllerTest {
         List<Product> products = Arrays.asList(new Product(), new Product());
         CompletableFuture<List<Product>> futureProducts = CompletableFuture.completedFuture(products);
 
-        // Assuming the service method will handle an invalid sort gracefully or ignore it
         when(productService.findAll(null)).thenReturn(futureProducts);  // No sorting strategy applied
 
         mockMvc.perform(get("/product/public/getAllProducts").param("sort", "invalidSort"))
@@ -169,7 +168,7 @@ class ProductControllerTest {
     }
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    void testDeleteProduct() throws Exception {
+    void testDeleteProduct() {
         String productId = "123";
         Product product = new Product();
         product.setProductId(productId);
@@ -181,7 +180,7 @@ class ProductControllerTest {
         ResponseEntity<?> responseEntity = productController.deleteProduct(productId);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(product, responseEntity.getBody());  // Expect the actual product to be returned
+        assertEquals(product, responseEntity.getBody()); 
 
         verify(productServices, times(1)).findById(productId);
         verify(productServices, times(1)).delete(productId);
@@ -189,7 +188,7 @@ class ProductControllerTest {
 
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
-    void testDeleteProduct_NotFound() throws Exception {
+    void testDeleteProduct_NotFound() {
         String productId = "123";
 
         CompletableFuture<Product> futureProduct = CompletableFuture.completedFuture(null);
@@ -239,7 +238,6 @@ class ProductControllerTest {
         List<Product> products = Arrays.asList(new Product(), new Product());
         CompletableFuture<List<Product>> futureProducts = CompletableFuture.completedFuture(products);
 
-        // Assuming SortByName strategy needs to be used
         when(productService.findAll(any(SortByPrice.class))).thenReturn(futureProducts);
 
         mockMvc.perform(get("/product/public/getAllProducts").param("sort", "SortByPrice"))
@@ -270,7 +268,7 @@ class ProductControllerTest {
     }
     @Test
     @WithMockUser(username="user", roles={"USER"})
-    void testGetProductById_NotFound() throws Exception {
+    void testGetProductById_NotFound() {
         String productId = "nonExistentId";
 
         // Return null wrapped in a CompletableFuture to simulate "not found"
@@ -316,7 +314,6 @@ class ProductControllerTest {
         List<Product> products = Arrays.asList(new Product(), new Product());
         CompletableFuture<List<Product>> futureProducts = CompletableFuture.completedFuture(products);
 
-        // Assuming SortByName strategy needs to be used
         when(productService.findAll(any())).thenReturn(futureProducts);
 
         mockMvc.perform(get("/product/public/getAllProducts").param("sort", "undefined sort"))

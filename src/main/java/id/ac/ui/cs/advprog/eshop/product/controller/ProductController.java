@@ -11,13 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import java.util.concurrent.CompletableFuture;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/product")
 public class ProductController {
-    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     private final ProductService service;
 
     public ProductController(ProductService service) {
