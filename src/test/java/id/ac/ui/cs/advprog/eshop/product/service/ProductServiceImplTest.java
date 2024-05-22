@@ -109,23 +109,51 @@ class ProductServiceImplTest {
 
     @Test
     void testUpdateProduct() {
-        when(productRepository.save(product)).thenReturn(product);
-        Product updatedProduct = productService.update(product);
-        verify(productRepository).save(product);
-        assertEquals(product.getProductId(), updatedProduct.getProductId());
+        // Mocking the existing product found in the repository
+        Product existingProduct = new Product();
+        existingProduct.setProductId("12345");
+        when(productRepository.findById("12345")).thenReturn(Optional.of(existingProduct));
+        when(productRepository.save(any(Product.class))).thenReturn(existingProduct);
+
+        // The product to update
+        Product productToUpdate = new Product();
+        productToUpdate.setProductId("12345");
+        productToUpdate.setProductName("New Name");
+
+        // Call the update method
+        Product updatedProduct = productService.update(productToUpdate);
+
+        // Verify that the repository's save method was called with the existing product
+        verify(productRepository).save(existingProduct);
+        assertEquals("12345", updatedProduct.getProductId());
+        assertEquals("New Name", existingProduct.getProductName());
     }
+
+
 
     @Test
     void testUpdateProductWhenOutOfStock() {
-        product.setProductQuantity(0);
+        // Mock the existing product
+        Product existingProduct = new Product();
+        existingProduct.setProductId("12345");
+        existingProduct.setProductQuantity(0); // Out of stock
+
+        // When productRepository.findById is called, return the existing product
+        when(productRepository.findById("12345")).thenReturn(Optional.of(existingProduct));
+        // Assume save operation returns the product successfully
+        when(productRepository.save(any(Product.class))).thenReturn(existingProduct);
+
+        // Notification mock
         Notification notification = new Notification();
-        when(notificationService.create(any())).thenReturn(notification);
-        when(productRepository.save(product)).thenReturn(product);
+        when(notificationService.create(any(Notification.class))).thenReturn(notification);
 
-        productService.update(product);
+        // Perform the update
+        productService.update(existingProduct);
 
-        verify(notificationService).create(any());
-        verify(productRepository).save(product);
+        // Verify the notification was created
+        verify(notificationService).create(any(Notification.class));
+        // Verify save was called on the repository
+        verify(productRepository).save(existingProduct);
     }
 
 }
