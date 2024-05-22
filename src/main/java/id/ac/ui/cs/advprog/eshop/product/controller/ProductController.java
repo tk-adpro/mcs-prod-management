@@ -71,15 +71,22 @@ public class ProductController {
     public ResponseEntity<Product> updateProduct(@PathVariable String productId, @RequestBody Product product) {
         CompletableFuture<ResponseEntity<Product>> response = service.findById(productId)
                 .thenApply(foundProduct -> {
+
                     if (foundProduct != null) {
-                        service.update(product);
+                        logger.info("Found product: {}", foundProduct);
+                        logger.info("Updating product: {}", product.getProductName());
+                        Product p = service.update(product);
+                        logger.info("Sakses: {}", product.getProductName());
                         return ResponseEntity.ok(product);
                     } else {
+
+                        System.out.println('g');
                         return ResponseEntity.notFound().build();
                     }
                 });
 
         try {
+            System.out.println(response.get());
             return response.get(); // Block until the future completes
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();

@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NoArgsConstructor
 @Entity
 @Table(name = "Product")
-public class Product {
+public class    Product {
     @Id
     @Column(name = "product_id", updatable = false, nullable = false)
     private String productId;

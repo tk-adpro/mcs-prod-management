@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.concurrent.CompletableFuture;
-
+import java.util.Optional;
 import java.util.List;
 
 @Service
@@ -52,15 +52,46 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public Product update(Product product) {
-        if (product.getProductQuantity() == 0) {
-            Notification notification = new Notification();
-            notification.setProduct(product);
-            notification.setRead(false);
-            notificationService.create(notification);
+    public Product update(Product incomingProduct) {
+        Optional<Product> existingProductOpt = productRepository.findById(incomingProduct.getProductId());
+
+        if (existingProductOpt.isPresent()) {
+            Product existingProduct = existingProductOpt.get();
+
+            // Update fields from incoming product to existing product
+            existingProduct.setProductName(incomingProduct.getProductName());
+            existingProduct.setProductDescription(incomingProduct.getProductDescription());
+            existingProduct.setProductPrice(incomingProduct.getProductPrice());
+            existingProduct.setProductDiscount(incomingProduct.getProductDiscount());
+            existingProduct.setProductQuantity(incomingProduct.getProductQuantity());
+            existingProduct.setProductAddedDate(incomingProduct.getProductAddedDate());
+            existingProduct.setProductImage(incomingProduct.getProductImage());
+
+            // Check for notification condition
+            if (incomingProduct.getProductQuantity() == 0) {
+                Notification notification = new Notification();
+                notification.setProduct(existingProduct); // Refer to the existing product
+                notification.setRead(false);
+                notificationService.create(notification);
+            }
+
+            // Save the updated product
+            return productRepository.save(existingProduct);
         }
-        return productRepository.save(product); 
+
+        // Return null or handle the case where the product does not exist
+        return null;
     }
+//    @Override
+//    public Product update(Product product) {
+//        if (product.getProductQuantity() == 0) {
+//            Notification notification = new Notification();
+//            notification.setProduct(product);
+//            notification.setRead(false);
+//            notificationService.create(notification);
+//        }
+//        return productRepository.save(product);
+//    }
 
     public void setProductRepository(ProductRepository productRepository) {
         this.productRepository = productRepository;
