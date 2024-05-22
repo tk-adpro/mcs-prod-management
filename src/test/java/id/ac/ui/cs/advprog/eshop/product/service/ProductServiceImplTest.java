@@ -55,7 +55,7 @@ class ProductServiceImplTest {
         when(productRepository.findAll()).thenReturn(List.of(product, product2));
 
         CompletableFuture<List<Product>> productsFuture = productService.findAll(null);
-        List<Product> products = productsFuture.get(); // Wait for future to complete
+        List<Product> products = productsFuture.get();
         assertEquals(2, products.size());
         assertTrue(products.contains(product) && products.contains(product2));
     }
@@ -66,8 +66,8 @@ class ProductServiceImplTest {
         String productId = "p1";
         doNothing().when(productRepository).deleteById(productId);
         CompletableFuture<Void> deleteResultFuture = productService.delete(productId);
-        deleteResultFuture.get();  // Ensure that the CompletableFuture completes without exception
-        verify(productRepository).deleteById(productId);  // Verify that deleteById was called
+        deleteResultFuture.get();
+        verify(productRepository).deleteById(productId);
     }
 
     @Test
@@ -129,7 +129,6 @@ class ProductServiceImplTest {
 
     @Test
     void testUpdateProductWhenOutOfStock() {
-        // Mock the existing product
         Product existingProduct = new Product();
         existingProduct.setProductId("12345");
         existingProduct.setProductQuantity(0); // Out of stock
@@ -137,7 +136,6 @@ class ProductServiceImplTest {
         when(productRepository.findById("12345")).thenReturn(Optional.of(existingProduct));
         when(productRepository.save(any(Product.class))).thenReturn(existingProduct);
 
-        // Notification mock
         Notification notification = new Notification();
         when(notificationService.create(any(Notification.class))).thenReturn(notification);
 
@@ -146,6 +144,48 @@ class ProductServiceImplTest {
         verify(notificationService).create(any(Notification.class));
         verify(productRepository).save(existingProduct);
     }
+    @Test
+    void testUpdateProductWithZeroQuantity() {
+        Product existingProduct = new Product();
+        existingProduct.setProductId("12345");
+        existingProduct.setProductQuantity(5);
+
+        Product productToUpdate = new Product();
+        productToUpdate.setProductId("12345");
+        productToUpdate.setProductQuantity(0);
+
+        when(productRepository.findById("12345")).thenReturn(Optional.of(existingProduct));
+        when(productRepository.save(any(Product.class))).thenReturn(existingProduct);
+
+        Notification notification = new Notification();
+        when(notificationService.create(any(Notification.class))).thenReturn(notification);
+
+        productService.update(productToUpdate);
+
+        verify(notificationService).create(any(Notification.class));
+        verify(productRepository).save(existingProduct);
+        assertEquals(0, existingProduct.getProductQuantity(), "Product quantity should be updated to zero");
+    }
+    @Test
+    void testUpdateProductWithNonZeroQuantity() {
+        Product existingProduct = new Product();
+        existingProduct.setProductId("12345");
+        existingProduct.setProductQuantity(5);
+
+        Product productToUpdate = new Product();
+        productToUpdate.setProductId("12345");
+        productToUpdate.setProductQuantity(10);
+
+        when(productRepository.findById("12345")).thenReturn(Optional.of(existingProduct));
+        when(productRepository.save(any(Product.class))).thenReturn(existingProduct);
+
+        productService.update(productToUpdate);
+
+        verify(notificationService, never()).create(any(Notification.class));
+        verify(productRepository).save(existingProduct);
+        assertEquals(10, existingProduct.getProductQuantity(), "Product quantity should be updated to 10");
+    }
+
     @Test
     void testUpdateProductNotFound() {
         Product productToUpdate = new Product();

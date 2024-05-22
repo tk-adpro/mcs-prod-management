@@ -72,7 +72,7 @@ public class ProductController {
         CompletableFuture<ResponseEntity<Product>> response = service.findById(productId)
                 .thenApply(foundProduct -> {
                     if (foundProduct != null) {
-                        Product p = service.update(product);
+                        service.update(product);
                         return ResponseEntity.ok(product);
                     } else {
                         return ResponseEntity.notFound().build();
