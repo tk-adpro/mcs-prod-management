@@ -3,7 +3,6 @@ package id.ac.ui.cs.advprog.eshop.product.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
