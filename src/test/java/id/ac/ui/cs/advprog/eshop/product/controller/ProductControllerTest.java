@@ -178,15 +178,30 @@ class ProductControllerTest {
         when(productServices.findById(productId)).thenReturn(futureProduct);
         when(productServices.delete(productId)).thenReturn(CompletableFuture.completedFuture(null));
 
-        ResponseEntity<?> responseEntity = productController.deleteProduct(productId).join();
+        ResponseEntity<?> responseEntity = productController.deleteProduct(productId);
 
-        assertEquals(HttpStatus.ACCEPTED, responseEntity.getStatusCode());
-        assertEquals("Product with ID 123 deleted successfully.", responseEntity.getBody());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(product, responseEntity.getBody());  // Expect the actual product to be returned
 
         verify(productServices, times(1)).findById(productId);
         verify(productServices, times(1)).delete(productId);
     }
 
+    @Test
+    @WithMockUser(username="admin", roles={"ADMIN"})
+    void testDeleteProduct_NotFound() throws Exception {
+        String productId = "123";
+
+        CompletableFuture<Product> futureProduct = CompletableFuture.completedFuture(null);
+        when(productServices.findById(productId)).thenReturn(futureProduct);
+
+        ResponseEntity<?> responseEntity = productController.deleteProduct(productId);
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+
+        verify(productServices, times(1)).findById(productId); // findById should be called
+        verify(productServices, never()).delete(productId); // delete should not be called
+    }
 
 
     @Test
@@ -195,7 +210,6 @@ class ProductControllerTest {
         List<Product> products = Arrays.asList(new Product(), new Product());
         CompletableFuture<List<Product>> futureProducts = CompletableFuture.completedFuture(products);
 
-        // Assuming SortByName strategy needs to be used
         when(productService.findAll(any(SortByName.class))).thenReturn(futureProducts);
 
         mockMvc.perform(get("/product/public/getAllProducts").param("sort", "SortByName"))
@@ -210,7 +224,6 @@ class ProductControllerTest {
         List<Product> products = Arrays.asList(new Product(), new Product());
         CompletableFuture<List<Product>> futureProducts = CompletableFuture.completedFuture(products);
 
-        // Assuming SortByName strategy needs to be used
         when(productService.findAll(any(SortByDate.class))).thenReturn(futureProducts);
 
         mockMvc.perform(get("/product/public/getAllProducts").param("sort", "SortByDate"))
@@ -235,19 +248,6 @@ class ProductControllerTest {
         verify(productService, times(1)).findAll(any(SortByPrice.class));
     }
 
-    @Test
-    @WithMockUser(username="admin", roles={"ADMIN"})
-    void testDeleteProduct_NotFound() throws Exception {
-        String productId = "123";
-
-        CompletableFuture<Product> futureProduct = CompletableFuture.completedFuture(null);
-        when(productServices.findById(productId)).thenReturn(futureProduct);
-
-        ResponseEntity<?> responseEntity = productController.deleteProduct(productId).join();
-
-        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-        verify(productServices, never()).delete(productId);
-    }
 
 
     @Test
