@@ -82,17 +82,6 @@ public class ProductServiceImpl implements ProductService {
         // Return null or handle the case where the product does not exist
         return null;
     }
-//    @Override
-//    public Product update(Product product) {
-//        if (product.getProductQuantity() == 0) {
-//            Notification notification = new Notification();
-//            notification.setProduct(product);
-//            notification.setRead(false);
-//            notificationService.create(notification);
-//        }
-//        return productRepository.save(product);
-//    }
-
     public void setProductRepository(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }

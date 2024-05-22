@@ -71,23 +71,16 @@ public class ProductController {
     public ResponseEntity<Product> updateProduct(@PathVariable String productId, @RequestBody Product product) {
         CompletableFuture<ResponseEntity<Product>> response = service.findById(productId)
                 .thenApply(foundProduct -> {
-
                     if (foundProduct != null) {
-                        logger.info("Found product: {}", foundProduct);
-                        logger.info("Updating product: {}", product.getProductName());
                         Product p = service.update(product);
-                        logger.info("Sakses: {}", product.getProductName());
                         return ResponseEntity.ok(product);
                     } else {
-
-                        System.out.println('g');
                         return ResponseEntity.notFound().build();
                     }
                 });
 
         try {
-            System.out.println(response.get());
-            return response.get(); // Block until the future completes
+            return response.get(); 
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
@@ -95,20 +88,16 @@ public class ProductController {
 
 
     @DeleteMapping("/admin/deleteProduct/{productId}")
-    public CompletableFuture<ResponseEntity<?>> deleteProduct(@PathVariable String productId) {
-        return service.findById(productId)
-                .thenCompose(product -> {
-                    if (product != null) {
-                        logger.info("Product found: {}", product);
-                        return service.delete(productId)
-                                .thenApply(voidResult -> {
-                                    return ResponseEntity.status(HttpStatus.ACCEPTED).body("Product with ID " + productId + " deleted successfully.");
-                                });
-                    } else {
-                        return CompletableFuture.completedFuture(ResponseEntity.notFound().build());
-                    }
-                });
+    public ResponseEntity<?> deleteProduct(@PathVariable String productId) {
+        Product product = service.findById(productId).join();
+        if (product != null) {
+            service.delete(productId).join();
+            return ResponseEntity.ok().body(product);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
+
 
 }
 
