@@ -15,7 +15,7 @@ class SortByNameTest extends ProductSortTestSetup {
     @Test
     void testSortByNameHappyPath() throws ExecutionException, InterruptedException {
         CompletableFuture<List<Product>> futureProducts = productService.findAll(new SortByName());
-        List<Product> sortedProducts = futureProducts.get(); // Wait for completion
+        List<Product> sortedProducts = futureProducts.get();
         assertEquals("Amigo", sortedProducts.get(0).getProductName());
         assertEquals("Bonita", sortedProducts.get(1).getProductName());
         assertEquals("Omago", sortedProducts.get(2).getProductName());

@@ -198,8 +198,8 @@ class ProductControllerTest {
 
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
 
-        verify(productServices, times(1)).findById(productId); // findById should be called
-        verify(productServices, never()).delete(productId); // delete should not be called
+        verify(productServices, times(1)).findById(productId);
+        verify(productServices, never()).delete(productId);
     }
 
 
@@ -255,7 +255,6 @@ class ProductControllerTest {
         Product product = new Product();
         product.setProductId(productId);
 
-        // Return null wrapped in a CompletableFuture to simulate "not found"
         when(productService.findById(productId)).thenReturn(CompletableFuture.completedFuture(null));
 
         mockMvc.perform(put("/product/admin/updateProduct/{productId}", productId)
@@ -271,7 +270,6 @@ class ProductControllerTest {
     void testGetProductById_NotFound() {
         String productId = "nonExistentId";
 
-        // Return null wrapped in a CompletableFuture to simulate "not found"
         when(productServices.findById(productId)).thenReturn(CompletableFuture.completedFuture(null));
 
         ResponseEntity<?> responseEntity = productController.getProductById(productId).join();
@@ -290,7 +288,7 @@ class ProductControllerTest {
         mockMvc.perform(get("/product/public/getAllProducts").param("sort", (String) null))
                 .andExpect(status().isOk());
 
-        verify(productService, times(1)).findAll(null); // Verify that null was explicitly handled
+        verify(productService, times(1)).findAll(null);
     }
 
     @Test
@@ -304,7 +302,7 @@ class ProductControllerTest {
         mockMvc.perform(get("/product/public/getAllProducts"))
                 .andExpect(status().isOk());
 
-        verify(productService, times(1)).findAll(null); // Verify that no sort parameter results in no sorting strategy
+        verify(productService, times(1)).findAll(null);
     }
 
 
@@ -319,6 +317,6 @@ class ProductControllerTest {
         mockMvc.perform(get("/product/public/getAllProducts").param("sort", "undefined sort"))
                 .andExpect(status().isOk());
 
-        verify(productService, times(1)).findAll(any()); // Verify that some sorting strategy is still used, but properly expect a CompletableFuture
+        verify(productService, times(1)).findAll(any());
     }
 }

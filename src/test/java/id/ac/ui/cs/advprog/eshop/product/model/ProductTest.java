@@ -26,7 +26,6 @@ class ProductTest {
         this.addedDate = LocalDateTime.now();
         this.product.setProductAddedDate(addedDate);
 
-        // Assuming the image is represented as a base64 string for simplicity
         this.base64Image = Base64.getEncoder().encodeToString("dummyimagecontent".getBytes());
         this.product.setProductImage(base64Image);
     }
@@ -74,7 +73,7 @@ class ProductTest {
     void testEnsureProductId() {
         Product newProduct = new Product();
         assertNull(newProduct.getProductId(), "ProductId should initially be null");
-        newProduct.ensureProductId(); // Manually invoke the method to simulate @PrePersist
+        newProduct.ensureProductId();
         assertNotNull(newProduct.getProductId(), "ProductId should not be null after ensureProductId is called");
         assertTrue(newProduct.getProductId().matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"),
                 "ProductId should be a valid UUID");
@@ -85,12 +84,11 @@ class ProductTest {
         Product productWithId = new Product();
         String preSetId = "eb558e9f-1c39-460e-8860-71af6af63bd6";
         productWithId.setProductId(preSetId);
-        productWithId.ensureProductId(); // Ensure id is not changed
+        productWithId.ensureProductId();
         assertEquals(preSetId, productWithId.getProductId(), "ProductId should not change if already set");
     }
     @Test
     void testEqualsAndHashCode() {
-        // Create two products with the same ID but different other attributes
         Product product1 = new Product();
         product1.setProductId("1");
         product1.setProductName("Product A");
@@ -111,27 +109,20 @@ class ProductTest {
         product2.setProductAddedDate(LocalDateTime.now().plusDays(1)); // Different date
         product2.setProductImage(Base64.getEncoder().encodeToString("ImageB".getBytes()));
 
-        // Test equality based on ID
         assertEquals(product1, product2, "Products with the same ID should be considered equal even if other attributes differ");
 
-        // Test hashCode consistency with equals
         assertEquals(product1.hashCode(), product2.hashCode(), "Hash codes should be equal for equal objects");
 
-        // Create another product with a different ID
         Product product3 = new Product();
         product3.setProductId("2");
         product3.setProductName("Product A");
 
-        // Ensure not equal to a different product ID
         assertNotEquals(product1, product3, "Products with different IDs should not be considered equal");
 
-        // Test hashCode distinction
         assertNotEquals(product1.hashCode(), product3.hashCode(), "Hash codes should not be equal for non-equal objects");
 
-        // Test self-equality
         assertEquals(product1, product1, "A product should be equal to itself");
 
-        // Test equality with null and other objects
         assertNotEquals(product1, null, "A product should not be equal to null");
         assertNotEquals(product1, new Object(), "A product should not be equal to an object of a different type");
     }

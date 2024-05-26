@@ -46,7 +46,7 @@ class NotificationControllerTest {
     void setup() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
-                .apply(SecurityMockMvcConfigurers.springSecurity())  // Add this to apply Spring Security configuration
+                .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();    }
 
     @Test
@@ -156,7 +156,7 @@ class NotificationControllerTest {
         notification.setNotificationId(notificationId);
 
         when(notificationService.findById(notificationId)).thenReturn(Optional.of(notification));
-        when(notificationService.delete(notificationId)).thenReturn(true); // Simulate successful deletion
+        when(notificationService.delete(notificationId)).thenReturn(true);
 
         mockMvc.perform(delete("/notification/admin/deleteNotification/{notificationId}", notificationId))
                 .andExpect(status().isNoContent());

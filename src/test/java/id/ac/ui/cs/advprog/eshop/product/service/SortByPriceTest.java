@@ -13,7 +13,7 @@ class SortByPriceTest extends ProductSortTestSetup {
     @Test
     void testSortByPriceHappyPath() throws ExecutionException, InterruptedException {
         CompletableFuture<List<Product>> futureProducts = productService.findAll(new SortByPrice());
-        List<Product> sortedProducts = futureProducts.get(); // Wait for completion
+        List<Product> sortedProducts = futureProducts.get();
 
         assertEquals(0.75, sortedProducts.get(0).getProductPrice(), 0.01);
         assertEquals(1.25, sortedProducts.get(1).getProductPrice(), 0.01);

@@ -76,19 +76,19 @@ class ProductServiceImplTest {
         doThrow(new IllegalArgumentException("Product not found")).when(productRepository).deleteById(productId);
         assertThrows(IllegalArgumentException.class, () -> {
             CompletableFuture<Void> deleteResultFuture = productService.delete(productId);
-            deleteResultFuture.get();  // This should throw an ExecutionException because of the IllegalArgumentException
+            deleteResultFuture.get();
         });
-        verify(productRepository).deleteById(productId);  // Verify that deleteById was called
+        verify(productRepository).deleteById(productId);
     }
 
     @Test
     void testFindProductByIdFound() throws ExecutionException, InterruptedException {
-        Product expectedProduct = new Product(); // Example product setup
+        Product expectedProduct = new Product();
         expectedProduct.setProductId("existingId");
         when(productRepository.findById("existingId")).thenReturn(Optional.of(expectedProduct));
 
         CompletableFuture<Product> foundProductFuture = productService.findById("existingId");
-        Product foundProduct = foundProductFuture.get(); // Wait for future to complete
+        Product foundProduct = foundProductFuture.get();
 
         assertNotNull(foundProduct);
         assertEquals(expectedProduct.getProductId(), foundProduct.getProductId());
@@ -131,7 +131,7 @@ class ProductServiceImplTest {
     void testUpdateProductWhenOutOfStock() {
         Product existingProduct = new Product();
         existingProduct.setProductId("12345");
-        existingProduct.setProductQuantity(0); // Out of stock
+        existingProduct.setProductQuantity(0);
 
         when(productRepository.findById("12345")).thenReturn(Optional.of(existingProduct));
         when(productRepository.save(any(Product.class))).thenReturn(existingProduct);

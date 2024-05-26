@@ -33,8 +33,8 @@ public class NotificationController {
     @GetMapping("/admin/getNotificationById/{notificationId}")
     public ResponseEntity<Notification> getNotificationById(@PathVariable String notificationId) {
         return service.findById(notificationId)
-                      .map(ResponseEntity::ok) // If found, return 200 OK with notification
-                      .orElseGet(() -> ResponseEntity.notFound().build()); // If not found, return 404 Not Found
+                      .map(ResponseEntity::ok)
+                      .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/admin/updateNotification/{notificationId}")
@@ -44,15 +44,15 @@ public class NotificationController {
                         Notification updatedNotification = service.update(notificationId, notification);
                         return ResponseEntity.ok(updatedNotification);
                     }) 
-                      .orElseGet(() -> ResponseEntity.notFound().build()); // If not found, return 404 Not Found
+                      .orElseGet(() -> ResponseEntity.notFound().build());
     }
     @DeleteMapping("/admin/deleteNotification/{notificationId}")
     public ResponseEntity<?> deleteNotification(@PathVariable String notificationId) {
         return service.findById(notificationId)
                       .map(notification -> {
                         service.delete(notificationId);
-                        return ResponseEntity.noContent().build(); // Return 204 No Content on successful delete
+                        return ResponseEntity.noContent().build();
                       })
-                      .orElseGet(() -> ResponseEntity.notFound().build()); // If not found, return 404 Not Found
+                      .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
