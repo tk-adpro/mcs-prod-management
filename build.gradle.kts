@@ -77,10 +77,8 @@ sonar {
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.junit.reportPaths", "${project.buildDir}/test-results/test")
         property("sonar.coverage.exclusions", "**/config/**")
-        property("sonar.exclusions", "**/config/**")
-        property("sonar.exclusions", "**/McsProdManagementApplication**")
-        property("sonar.test.exclusions", "**/src/test/**") 
-        property("sonar.test.exclusions", "**/config/**") 
+        property("sonar.exclusions", "**/config/**,**/McsProdManagementApplication**")
+        property("sonar.test.exclusions", "**/src/test/**,**/config/**")
 
     }
 }
