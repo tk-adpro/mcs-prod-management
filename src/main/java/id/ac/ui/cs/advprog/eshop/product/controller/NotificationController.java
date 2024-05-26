@@ -46,6 +46,7 @@ public class NotificationController {
                     }) 
                     .orElseGet(() -> ResponseEntity.notFound().build());
     }
+    
     @DeleteMapping("/admin/deleteNotification/{notificationId}")
     public ResponseEntity<Void> deleteNotification(@PathVariable String notificationId) {
         return service.findById(notificationId)
