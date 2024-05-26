@@ -82,5 +82,8 @@ sonar {
         property("sonar.coverage.exclusions", "**/config/**")
         property("sonar.exclusions", "**/config/**")
         property("sonar.exclusions", "**/McsProdManagementApplication**")
+        property("sonar.test.exclusions", "**/src/test/**") 
+        property("sonar.test.exclusions", "**/config/**") 
+
     }
 }
