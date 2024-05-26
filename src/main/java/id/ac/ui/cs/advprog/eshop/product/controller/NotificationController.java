@@ -47,12 +47,12 @@ public class NotificationController {
                       .orElseGet(() -> ResponseEntity.notFound().build());
     }
     @DeleteMapping("/admin/deleteNotification/{notificationId}")
-    public ResponseEntity<?> deleteNotification(@PathVariable String notificationId) {
+    public ResponseEntity<Void> deleteNotification(@PathVariable String notificationId) {
         return service.findById(notificationId)
                       .map(notification -> {
-                        service.delete(notificationId);
-                        return ResponseEntity.noContent().build();
+                          service.delete(notificationId);
+                          return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
                       })
-                      .orElseGet(() -> ResponseEntity.notFound().build());
+                      .orElse(new ResponseEntity<Void>(HttpStatus.NOT_FOUND));
     }
 }

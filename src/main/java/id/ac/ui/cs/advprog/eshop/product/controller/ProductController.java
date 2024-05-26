@@ -85,7 +85,7 @@ public class ProductController {
 
 
     @DeleteMapping("/admin/deleteProduct/{productId}")
-    public ResponseEntity<?> deleteProduct(@PathVariable String productId) {
+    public ResponseEntity<Product> deleteProduct(@PathVariable String productId) {
         Product product = service.findById(productId).join();
         if (product != null) {
             service.delete(productId).join();
@@ -94,6 +94,7 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         }
     }
+    
 
 
 }
