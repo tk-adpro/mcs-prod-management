@@ -81,5 +81,6 @@ sonar {
         property("sonar.junit.reportPaths", "${project.buildDir}/test-results/test")
         property("sonar.coverage.exclusions", "**/config/**")
         property("sonar.exclusions", "**/config/**")
+        property("sonar.exclusions", "**/McsProdManagementApplication**")
     }
 }
